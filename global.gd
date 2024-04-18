@@ -1,7 +1,7 @@
 extends Node
 @export var current_palette: Image = preload("res://Palettes/default.png")
 
-func get_palette_color(color: Vector2i):
+func get_palette_color(color: Vector2i) -> Color:
 	return current_palette.get_pixelv(color)
 
 var units: Array[Unit]
@@ -11,7 +11,7 @@ var level: Level
 var camera: Camera3D
 var movement: Array
 
-func _ready():
+func _ready() -> void:
 	if not Engine.is_editor_hint():
 		call_deferred("parse_text")
 
@@ -34,11 +34,11 @@ var directions = {
 	TurnActions.IDLE: [Vector3i(0,0,0), null]
 }
 
-func block(action: TurnActions):
+func block(action: TurnActions) -> void:
 	for unit in get_units_with_effect("you"):
 		unit.move(directions[action][0], directions[action][1], false)
 
-func _process(_delta):
+func _process(_delta) -> void:
 	var camera_direction = Global.camera.global_transform.basis.z
 	var action: TurnActions
 	if feature_index.has("you"):
@@ -60,7 +60,7 @@ func _process(_delta):
 			%SoundMove.play()
 			turn(action)
 
-func turn(action: TurnActions):
+func turn(action: TurnActions) -> void:
 	block(action)
 	for move in movement:
 		var unit: Unit = move[0]
@@ -69,7 +69,7 @@ func turn(action: TurnActions):
 	movement = []
 	parse_text()
 
-func parse_text():
+func parse_text() -> void:
 		var parsing_directions = [Vector3i(1,0,0), Vector3i(0,1,0), Vector3i(0,0,1)]
 		feature_index = {}
 		for rule in baserules:
@@ -107,7 +107,7 @@ func parse_text():
 				for unit in rule["rule_units"]:
 					unit.color = Global.get_palette_color(unit.active_color)
 
-func get_units_with_effect(prop: String):
+func get_units_with_effect(prop: String) -> Array[Unit]:
 	var returns: Array[Unit] = []
 	var names: Array[String] = []
 	if feature_index.has(prop):
@@ -123,7 +123,7 @@ func get_units_with_effect(prop: String):
 				returns.append(unit)
 	return returns
 
-func hasfeature(target_unit: Unit, ruleVerb: String, ruleProp: String, at: Vector3i):
+func hasfeature(target_unit: Unit, ruleVerb: String, ruleProp: String, at: Vector3i) -> bool:
 	if target_unit.unit_type == "text":
 		if feature_index.has("text"):
 			for unit in units:
@@ -146,7 +146,7 @@ func hasfeature(target_unit: Unit, ruleVerb: String, ruleProp: String, at: Vecto
 					return true
 	return false
 
-func units_at(pos: Vector3i):
+func units_at(pos: Vector3i) -> Array[Unit]:
 	var returns: Array[Unit] = []
 	for i in units.size():
 		var unit: Unit = units[i]

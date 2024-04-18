@@ -1,5 +1,6 @@
 res://world.tscn
+res://level.gd
+res://unit.gd
+res://global.gd
 res://unit.tscn
 res://global.tscn
-res://global.gd
-res://unit.gd

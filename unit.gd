@@ -53,9 +53,9 @@ var read_name := "error"
 var wobble_frame := 1
 var wobble_timer := 0.0
 
-var character_frame = 0
+var character_frame := 0
 
-func _ready():
+func _ready() -> void:
 	if not Engine.is_editor_hint():
 		sprite = unit_name
 		if unit_name.substr(0,5) == "text_":
@@ -67,7 +67,7 @@ func _ready():
 		%Sprite.sorting_offset = layer/30.0
 		color = Global.get_palette_color(base_color)
 
-func _process(delta):
+func _process(delta) -> void:
 	if not Engine.is_editor_hint():
 		wobble_timer += delta
 		if wobble_timer>0.160:
@@ -75,7 +75,7 @@ func _process(delta):
 			wobble_frame+=1
 			if wobble_frame>3:
 				wobble_frame=1
-		var frame = 0
+		var frame := 0
 		if tiling == Tiling.CHARACTER or Tiling.DIRECTIONAL:
 			frame += dir
 		if tiling == Tiling.CHARACTER:
@@ -88,13 +88,13 @@ func _process(delta):
 			tween.set_ease(Tween.EASE_OUT)
 			tween.tween_property(self, "global_position", Vector3(pos.x+0.5, -(pos.y+0.5), pos.z+0.5), 0.15)
 		var direction_to_camera = Global.camera.global_transform.origin - global_transform.origin
-		var forward_direction = transform.basis.z
+		var forward_direction := transform.basis.z
 		var dot = direction_to_camera.dot(forward_direction)
 		%Sprite.flip_h = dot < 0.0
 	else:
 		%Sprite.texture = load("res://Sprites/" + str(unit_name) + "_0_1.png")
 
-func move(by: Vector3i, _direction: Direction, instant: bool):
+func move(by: Vector3i, _direction: Direction, instant: bool) -> bool:
 	if _direction!=null: 
 		dir = _direction
 	for unit in Global.units:
@@ -111,7 +111,7 @@ func move(by: Vector3i, _direction: Direction, instant: bool):
 	else:
 		return false
 
-func check(at: Vector3i):
+func check(at: Vector3i) -> Array:
 	var stop = false
 	for unit in Global.units:
 		var isstop = Global.hasfeature(unit,"is","stop",at)
