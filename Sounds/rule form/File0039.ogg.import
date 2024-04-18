@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://8nprvnbx4sjv"
+path="res://.godot/imported/File0039.ogg-793822cbf204bc84b6112d78fb4830fb.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/rule form/File0039.ogg"
+dest_files=["res://.godot/imported/File0039.ogg-793822cbf204bc84b6112d78fb4830fb.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

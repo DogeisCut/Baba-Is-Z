@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b3h50ursdo70w"
+path="res://.godot/imported/apocalypse.ogg-15e2b61ee07facc7ab1b22fbb986ac0c.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/all is done/apocalypse.ogg"
+dest_files=["res://.godot/imported/apocalypse.ogg-15e2b61ee07facc7ab1b22fbb986ac0c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://dnht4ti8bjkxj"
+path="res://.godot/imported/space.png-6af9db25c5a7054e26f9bc19cd12991f.image"
+
+[deps]
+
+source_file="res://Palettes/space.png"
+dest_files=["res://.godot/imported/space.png-6af9db25c5a7054e26f9bc19cd12991f.image"]
+
+[params]
+

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d3j2dldlhiw6q"
+path="res://.godot/imported/File0160.ogg-6c4a9fadd0d96f0e595f04a64dc3a462.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/play notes/File0160.ogg"
+dest_files=["res://.godot/imported/File0160.ogg-6c4a9fadd0d96f0e595f04a64dc3a462.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

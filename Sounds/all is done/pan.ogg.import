@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ds6nvudx4swcm"
+path="res://.godot/imported/pan.ogg-c3e9af5a4ffb1954e60c9071a4890e1c.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/all is done/pan.ogg"
+dest_files=["res://.godot/imported/pan.ogg-c3e9af5a4ffb1954e60c9071a4890e1c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

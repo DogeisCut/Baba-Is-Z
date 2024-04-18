@@ -1,0 +1,54 @@
+[gd_scene load_steps=15 format=3 uid="uid://bicc7u1jy5l0q"]
+
+[ext_resource type="Script" path="res://global.gd" id="1_2mrcy"]
+[ext_resource type="AudioStream" uid="uid://besmxewm5pgp8" path="res://Music/baba.ogg" id="2_1o21f"]
+[ext_resource type="AudioStream" uid="uid://ccig2h22kwv2y" path="res://Sounds/move/File0044.ogg" id="2_u3gkw"]
+[ext_resource type="AudioStream" uid="uid://dyr1b368npnq2" path="res://Sounds/move/File0047.ogg" id="3_rsqf8"]
+[ext_resource type="AudioStream" uid="uid://def6p7uso6qjj" path="res://Sounds/move/File0057.ogg" id="4_qi4x7"]
+[ext_resource type="AudioStream" uid="uid://u70nmu2of8ni" path="res://Sounds/move/File0048.ogg" id="5_knem1"]
+[ext_resource type="AudioStream" uid="uid://bitr3k6osp0o3" path="res://Sounds/move/File0049.ogg" id="6_l8thq"]
+[ext_resource type="AudioStream" uid="uid://lqyrinrvwslb" path="res://Sounds/move/File0050.ogg" id="7_ye4j1"]
+[ext_resource type="AudioStream" uid="uid://clef318yxbqk4" path="res://Sounds/move/File0051.ogg" id="8_54rhm"]
+[ext_resource type="AudioStream" uid="uid://6028gyj02ats" path="res://Sounds/move/File0052.ogg" id="9_hxwys"]
+[ext_resource type="AudioStream" uid="uid://swrgeicg6oaa" path="res://Sounds/move/File0053.ogg" id="10_o1j6r"]
+[ext_resource type="AudioStream" uid="uid://dr6oa7w5ujnp5" path="res://Sounds/move/File0054.ogg" id="11_28jre"]
+[ext_resource type="AudioStream" uid="uid://sh0bymkkhsb5" path="res://Sounds/move/File0055.ogg" id="12_pnvwl"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_1jn0a"]
+streams_count = 11
+stream_0/stream = ExtResource("2_u3gkw")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("3_rsqf8")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("5_knem1")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("6_l8thq")
+stream_3/weight = 1.0
+stream_4/stream = ExtResource("7_ye4j1")
+stream_4/weight = 1.0
+stream_5/stream = ExtResource("8_54rhm")
+stream_5/weight = 1.0
+stream_6/stream = ExtResource("9_hxwys")
+stream_6/weight = 1.0
+stream_7/stream = ExtResource("10_o1j6r")
+stream_7/weight = 1.0
+stream_8/stream = ExtResource("11_28jre")
+stream_8/weight = 1.0
+stream_9/stream = ExtResource("12_pnvwl")
+stream_9/weight = 1.0
+stream_10/stream = ExtResource("4_qi4x7")
+stream_10/weight = 1.0
+
+[node name="Global" type="Node"]
+script = ExtResource("1_2mrcy")
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("2_1o21f")
+autoplay = true
+
+[node name="SoundMove" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_1jn0a")
+volume_db = 5.0
+max_polyphony = 5

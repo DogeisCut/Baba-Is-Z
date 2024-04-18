@@ -1,0 +1,10 @@
+AudioStreamPlayer
+Node
+Control
+CanvasLayer
+Node3D
+Camera3D
+GridMap
+Sprite3D
+WorldEnvironment
+MeshInstance3D

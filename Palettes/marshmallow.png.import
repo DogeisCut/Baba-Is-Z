@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://i81lgy02qrbs"
+path="res://.godot/imported/marshmallow.png-6c683793cd300cfacc67a3bf616c031d.image"
+
+[deps]
+
+source_file="res://Palettes/marshmallow.png"
+dest_files=["res://.godot/imported/marshmallow.png-6c683793cd300cfacc67a3bf616c031d.image"]
+
+[params]
+

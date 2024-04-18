@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://mu1l7ig76spb"
+path="res://.godot/imported/default.png-af1b739a6ac5535a18295ada8ade46ee.image"
+
+[deps]
+
+source_file="res://Palettes/default.png"
+dest_files=["res://.godot/imported/default.png-af1b739a6ac5535a18295ada8ade46ee.image"]
+
+[params]
+

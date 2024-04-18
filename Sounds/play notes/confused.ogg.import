@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cat50gb2wgu"
+path="res://.godot/imported/confused.ogg-c6e6e63b623b5c98205a56a9147b2f1d.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/play notes/confused.ogg"
+dest_files=["res://.godot/imported/confused.ogg-c6e6e63b623b5c98205a56a9147b2f1d.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

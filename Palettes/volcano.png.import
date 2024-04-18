@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://c84iujki54f6g"
+path="res://.godot/imported/volcano.png-a4d04d249d5f9f3a5fc0292ad322beed.image"
+
+[deps]
+
+source_file="res://Palettes/volcano.png"
+dest_files=["res://.godot/imported/volcano.png-a4d04d249d5f9f3a5fc0292ad322beed.image"]
+
+[params]
+

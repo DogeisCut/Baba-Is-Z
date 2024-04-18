@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://db3ovouu641q"
+path="res://.godot/imported/garden.png-0c867a0cd94eb4b3ae31248ab8716a68.image"
+
+[deps]
+
+source_file="res://Palettes/garden.png"
+dest_files=["res://.godot/imported/garden.png-0c867a0cd94eb4b3ae31248ab8716a68.image"]
+
+[params]
+

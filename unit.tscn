@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://om1kswasm0yo"]
+
+[ext_resource type="Script" path="res://unit.gd" id="1_c6nsn"]
+[ext_resource type="Texture2D" uid="uid://kxlswahrw1ti" path="res://Sprites/error_0_1.png" id="2_bks04"]
+
+[node name="Unit" type="Node3D"]
+script = ExtResource("1_c6nsn")
+
+[node name="Sprite" type="Sprite3D" parent="."]
+unique_name_in_owner = true
+pixel_size = 0.0417
+billboard = 1
+texture_filter = 0
+texture = ExtResource("2_bks04")

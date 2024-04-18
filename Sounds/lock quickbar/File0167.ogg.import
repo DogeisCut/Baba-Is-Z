@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d3bb11se6pja8"
+path="res://.godot/imported/File0167.ogg-668d7caf11c6bab237025615d510e040.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/lock quickbar/File0167.ogg"
+dest_files=["res://.godot/imported/File0167.ogg-668d7caf11c6bab237025615d510e040.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://coehfxtnok8db"
+path="res://.godot/imported/strong_note.ogg-0e1217db0fdd885ba46a08499c39d42b.oggvorbisstr"
+
+[deps]
+
+source_file="res://Sounds/play notes/strong_note.ogg"
+dest_files=["res://.godot/imported/strong_note.ogg-0e1217db0fdd885ba46a08499c39d42b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://dv7srehx461bw"
+path="res://.godot/imported/autumn.png-3fd9c4147483ced85d46ee9113571c02.image"
+
+[deps]
+
+source_file="res://Palettes/autumn.png"
+dest_files=["res://.godot/imported/autumn.png-3fd9c4147483ced85d46ee9113571c02.image"]
+
+[params]
+

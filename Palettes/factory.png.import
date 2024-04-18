@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://5301la0ls4b5"
+path="res://.godot/imported/factory.png-6b21baacae619e76a6c9b8c916791aa9.image"
+
+[deps]
+
+source_file="res://Palettes/factory.png"
+dest_files=["res://.godot/imported/factory.png-6b21baacae619e76a6c9b8c916791aa9.image"]
+
+[params]
+

@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://b2b5v4nke18hq"
+path="res://.godot/imported/ocean.png-6b2c8532bd5411f89b67f7a08598a05f.image"
+
+[deps]
+
+source_file="res://Palettes/ocean.png"
+dest_files=["res://.godot/imported/ocean.png-6b2c8532bd5411f89b67f7a08598a05f.image"]
+
+[params]
+
