@@ -5,5 +5,5 @@ The structure of the project is designed to be close to how the actual game hand
 
 As of now, parsing isnt really real, and is more like pattern detection. If someone is willing to take a look at the project and implement proper parsing for me, that'd be much appreciated
 
-Assets were used with permission.
+Assets were used with permission. (Though i probably shouldnt have them all in the repo like that)
 
