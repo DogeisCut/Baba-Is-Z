@@ -127,10 +127,11 @@ func parse_text() -> void:
 						for potential_noun in units_at(Vector3i(unit.pos)-direction):
 							if (potential_noun.unit_name.substr(0,5) == "text_") and (potential_noun.unit_type == "text") and potential_noun.text_type == potential_noun.TextType.NOUN:
 								found_nouns.append(potential_noun)
-							
-						for potential_infix in units_at(Vector3i(unit.pos) - direction * 2):
-							if (potential_infix.unit_name.substr(0,5) == "text_") and (potential_infix.unit_type == "text") and potential_infix.text_type == potential_infix.TextType.INFIX:
-								found_infixes.append(potential_infix)
+						
+						for fn in found_nouns:
+							for potential_infix in units_at(fn.pos - direction):
+								if (potential_infix.unit_name.substr(0,5) == "text_") and (potential_infix.unit_type == "text") and potential_infix.text_type == potential_infix.TextType.INFIX:
+									found_infixes.append(potential_infix)
 						
 						for potential_second_noun in units_at(Vector3i(unit.pos) - direction * 3):
 							if (potential_second_noun.unit_name.substr(0,5) == "text_") and (potential_second_noun.unit_type == "text") and potential_second_noun.text_type == potential_second_noun.TextType.NOUN:
