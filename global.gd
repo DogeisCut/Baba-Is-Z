@@ -41,7 +41,51 @@ var infix_conditions: Dictionary = {
 				continue
 			if stacker.unit_name == obj2_name:
 				return true
-		return false
+		return false,
+	
+	"under": func(obj1, obj2_name):
+		var below_pos = obj1.pos + Vector3i(0, -1, 0)
+		for unit in units_at(below_pos):
+			if unit.unit_name == obj2_name:
+				return true
+		return false,
+
+	"above": func(obj1, obj2_name):
+		var above_pos = obj1.pos + Vector3i(0, 1, 0)
+		for unit in units_at(above_pos):
+			if unit.unit_name == obj2_name:
+				return true
+		return false,
+
+	"near": func(obj1, obj2_name):
+		var adjacent_offsets = [
+			Vector3i(1, 0, 0),
+			Vector3i(-1, 0, 0),
+			Vector3i(0, 1, 0),
+			Vector3i(0, -1, 0),
+			Vector3i(0, 0, 1),
+			Vector3i(0, 0, -1)
+		]
+		for offset in adjacent_offsets:
+			var adjacent_pos = obj1.pos + offset
+			for unit in units_at(adjacent_pos):
+				if unit.unit_name == obj2_name:
+					return true
+		return false,
+
+	"beside": func(obj1, obj2_name):
+		var beside_offsets = [
+			Vector3i(1, 0, 0),
+			Vector3i(-1, 0, 0),
+			Vector3i(0, 0, 1),
+			Vector3i(0, 0, -1)
+		]
+		for offset in beside_offsets:
+			var beside_pos = obj1.pos + offset
+			for unit in units_at(beside_pos):
+				if unit.unit_name == obj2_name:
+					return true
+		return false,
 }
 
 var prefix_conditions: Dictionary = {
