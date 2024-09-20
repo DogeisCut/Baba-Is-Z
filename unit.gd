@@ -58,6 +58,8 @@ var wobble_timer := 0.0
 
 var character_frame := 0
 
+var properties: Array[Array] = []
+
 func _ready() -> void:
 	if not Engine.is_editor_hint():
 		sprite = unit_name
@@ -118,7 +120,7 @@ func move(by: Vector3i, _direction: Direction, instant: bool) -> bool:
 	if _direction!=null: 
 		dir = _direction
 	for unit in Global.units:
-		if Global.hasfeature(unit,"is","push",(pos+by)):
+		if Global.has_feature(unit,"is","push",(pos+by)):
 			if unit.move(by, _direction, instant)==false:
 				return false
 	if check(pos+by)[1]==false:
@@ -134,7 +136,7 @@ func move(by: Vector3i, _direction: Direction, instant: bool) -> bool:
 func check(at: Vector3i) -> Array:
 	var stop = false
 	for unit in Global.units:
-		var isstop = Global.hasfeature(unit,"is","stop",at)
+		var isstop = Global.has_feature(unit,"is","stop",at)
 		if isstop:
 			stop = true
 	if (at.x>Global.level.level_size.x-1 or at.y>Global.level.level_size.y-1 or at.z>Global.level.level_size.z-1):
