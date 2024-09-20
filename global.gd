@@ -136,18 +136,20 @@ func parse_text() -> void:
 							if (potential_second_noun.unit_name.substr(0,5) == "text_") and (potential_second_noun.unit_type == "text") and potential_second_noun.text_type == potential_second_noun.TextType.NOUN:
 								second_nouns.append(potential_second_noun)
 							
-						for potential_prefix in units_at(Vector3i(unit.pos)-direction*2):
-							if (potential_prefix.unit_name.substr(0,5) == "text_") and (potential_prefix.unit_type == "text") and potential_prefix.text_type == potential_prefix.TextType.PREFIX:
-								found_prefixes.append(potential_prefix)
+						if !found_infixes.is_empty() and !second_nouns.is_empty() and !found_nouns.is_empty():
+							var temp = found_nouns
+							found_nouns = second_nouns
+							second_nouns = temp
+							
+						for fn in found_nouns:
+							for potential_prefix in units_at(fn.pos-direction):
+								if (potential_prefix.unit_name.substr(0,5) == "text_") and (potential_prefix.unit_type == "text") and potential_prefix.text_type == potential_prefix.TextType.PREFIX:
+									found_prefixes.append(potential_prefix)
 							
 						for potential_prop in units_at(Vector3i(unit.pos)+direction):
 							if (potential_prop.unit_name.substr(0,5) == "text_") and (potential_prop.unit_type == "text") and ((potential_prop.text_type == potential_prop.TextType.PROP) or (potential_prop.text_type == potential_prop.TextType.NOUN)):
 								found_props.append(potential_prop)
 						
-						if !found_infixes.is_empty() and !second_nouns.is_empty() and !found_nouns.is_empty():
-							var temp = found_nouns
-							found_nouns = second_nouns
-							second_nouns = temp
 						
 						for found_noun in found_nouns:
 							for found_prop in found_props:
