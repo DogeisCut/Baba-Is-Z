@@ -14,4 +14,3 @@ func _ready() -> void:
 		%Camroot.global_position = Vector3(level_size.x, -level_size.y, level_size.z)/2
 		%Enviroment.get_environment().background_color = Global.get_palette_color(Vector2i(1,0))
 		%LevelBounds.get_active_material(0).albedo_color = Global.get_palette_color(Vector2i(0,4))
-
