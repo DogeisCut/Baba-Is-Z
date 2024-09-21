@@ -11,6 +11,24 @@ var level: Level
 var camera: Camera3D
 var movement: Array
 
+var colors = {
+	"red": Vector2i(2, 2),
+	"orange": Vector2i(2, 3),
+	"yellow": Vector2i(2, 4),
+	"lime": Vector2i(5, 3),
+	"green": Vector2i(5, 2),
+	"cyan": Vector2i(1, 4),
+	"blue": Vector2i(3, 2),
+	"purple": Vector2i(3, 1),
+	"pink": Vector2i(4, 1),
+	"rosy": Vector2i(4, 2),
+	"black": Vector2i(0, 4),
+	"grey": Vector2i(0, 1),
+	"silver": Vector2i(0, 2),
+	"white": Vector2i(0, 3),
+	"brown": Vector2i(6, 1)
+}
+
 func _ready() -> void:
 	if not Engine.is_editor_hint():
 		call_deferred("parse_text")
@@ -111,56 +129,80 @@ var prefix_conditions: Dictionary = {
 func handle_prefix_conditions(prefix):
 	return prefix_conditions[prefix]
 
-func block(action: TurnActions) -> void:
+func do_movement(action: TurnActions) -> void:
 	for unit in get_units_with_effect("you"):
-		unit.move(directions[action][0], directions[action][1], false)
+		if action != TurnActions.IDLE:
+			unit.move(directions[action][0], directions[action][1], false)
+
+func block(action: TurnActions) -> void:
+	for color in colors.keys():
+		for unit in get_units_with_effect(color):
+			unit.color = get_palette_color(colors[color])
 
 func _process(_delta) -> void:
-	var camera_direction = Global.camera.global_transform.basis.z
-	var action: TurnActions
-	if feature_index.has("you"):
-		if Input.is_action_just_pressed("game_right"):
-			action = TurnActions.RIGHT
-		if Input.is_action_just_pressed("game_forward"):
-			action = TurnActions.FORAWRD
-		if Input.is_action_just_pressed("game_left"):
-			action = TurnActions.LEFT
-		if Input.is_action_just_pressed("game_backward"):
-			action = TurnActions.BACKWARD
-		if Input.is_action_just_pressed("game_up"):
-			action = TurnActions.UP
-		if Input.is_action_just_pressed("game_down"):
-			action = TurnActions.DOWN
-		if Input.is_action_just_pressed("game_idle"):
-			action = TurnActions.IDLE
-		if action:
-			%SoundMove.play()
-			turn(action)
+	if not Engine.is_editor_hint():
+		var camera_direction = Global.camera.global_transform.basis.z
+		var action: TurnActions
+		var do_action = false
+		if feature_index.has("you"):
+			if Input.is_action_just_pressed("game_right"):
+				action = TurnActions.RIGHT
+				do_action = true
+			if Input.is_action_just_pressed("game_forward"):
+				action = TurnActions.FORAWRD
+				do_action = true
+			if Input.is_action_just_pressed("game_left"):
+				action = TurnActions.LEFT
+				do_action = true
+			if Input.is_action_just_pressed("game_backward"):
+				action = TurnActions.BACKWARD
+				do_action = true
+			if Input.is_action_just_pressed("game_up"):
+				action = TurnActions.UP
+				do_action = true
+			if Input.is_action_just_pressed("game_down"):
+				action = TurnActions.DOWN
+				do_action = true
+			if Input.is_action_just_pressed("game_idle"):
+				action = TurnActions.IDLE
+				do_action = true
+			if do_action:
+				%SoundMove.play()
+				turn(action)
 
 func turn(action: TurnActions) -> void:
-	block(action)
+	for unit in units:
+		unit.color = Global.get_palette_color(unit.base_color)
+	do_movement(action)
 	for move in movement:
 		var unit: Unit = move[0]
 		var to: Vector3i = move[1]
 		unit.pos = to
 	movement = []
 	parse_text()
+	handle_transforms()
+	block(action)
+
+func flatten_array(arr):
+	var flat = []
+	for element in arr:
+		if element is Array:
+			flat.append_array(flatten_array(element))
+		else:
+			flat.append(element)
+	return flat
 
 func parse_text() -> void:
 		var parsing_directions = [Vector3i(1,0,0), Vector3i(0,1,0), Vector3i(0,0,1)]
 		feature_index = {}
 		for rule in baserules:
-			if !feature_index.has(rule[0]): feature_index[rule[0]] = []
-			if !feature_index.has(rule[1]): feature_index[rule[1]] = []
-			if !feature_index.has(rule[2]): feature_index[rule[2]] = []
-			feature_index[rule[0]].append({rule_units = [], rule_dict = [rule[0], rule[1], rule[2]], tags = ["baserule"]})
-			feature_index[rule[1]].append({rule_units = [], rule_dict = [rule[0], rule[1], rule[2]], tags = ["baserule"]})
-			feature_index[rule[2]].append({rule_units = [], rule_dict = [rule[0], rule[1], rule[2]], tags = ["baserule"]})
+			for used_word in flatten_array(rule):
+				if !feature_index.has(used_word): feature_index[used_word] = []
+				feature_index[used_word].append({rule_units = [], rule_dict = rule, tags = ["baserule"]})
 		for direction in parsing_directions:
 			for unit in units:
 				var is_text_unit: = (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")
 				if is_text_unit:
-					unit.color = Global.get_palette_color(unit.base_color)
 					if unit.text_type == unit.TextType.VERB:
 						var found_nouns: Array[Unit] = []
 						var found_props: Array[Unit] = []
@@ -168,7 +210,7 @@ func parse_text() -> void:
 						var found_infixes: Array[Unit] = []
 						var second_nouns: Array[Unit] = []
 						
-						for potential_noun in units_at(Vector3i(unit.pos)-direction):
+						for potential_noun in units_at(unit.pos-direction):
 							if (potential_noun.unit_name.substr(0,5) == "text_") and (potential_noun.unit_type == "text") and potential_noun.text_type == potential_noun.TextType.NOUN:
 								found_nouns.append(potential_noun)
 						
@@ -176,10 +218,9 @@ func parse_text() -> void:
 							for potential_infix in units_at(fn.pos - direction):
 								if (potential_infix.unit_name.substr(0,5) == "text_") and (potential_infix.unit_type == "text") and potential_infix.text_type == potential_infix.TextType.INFIX:
 									found_infixes.append(potential_infix)
-						
-						for potential_second_noun in units_at(Vector3i(unit.pos) - direction * 3):
-							if (potential_second_noun.unit_name.substr(0,5) == "text_") and (potential_second_noun.unit_type == "text") and potential_second_noun.text_type == potential_second_noun.TextType.NOUN:
-								second_nouns.append(potential_second_noun)
+								for potential_second_noun in units_at(potential_infix.pos - direction):
+									if (potential_second_noun.unit_name.substr(0,5) == "text_") and (potential_second_noun.unit_type == "text") and (potential_second_noun.text_type == potential_second_noun.TextType.NOUN or potential_second_noun.text_type == potential_infix.arg_type[0]):
+										second_nouns.append(potential_second_noun)
 							
 						if !found_infixes.is_empty() and !second_nouns.is_empty() and !found_nouns.is_empty():
 							var temp = found_nouns
@@ -203,28 +244,19 @@ func parse_text() -> void:
 								
 								if !found_prefixes.is_empty():
 									for found_prefix in found_prefixes:
-										if !feature_index.has(found_prefix.read_name): feature_index[found_prefix.read_name] = []
 										rule[3].append([found_prefix.read_name, []])
 										rule_units.append(found_prefix)
-										feature_index[found_prefix.read_name].append({rule_units = rule_units, rule_dict = rule, tags = []})
 								
 								if !found_infixes.is_empty() and !second_nouns.is_empty():
 									for found_infix in found_infixes:
-										if !feature_index.has(found_infix.read_name): feature_index[found_infix.read_name] = []
 										for second_noun in second_nouns:
-											if !feature_index.has(second_noun.read_name): feature_index[second_noun.read_name] = []
 											rule[3].append([found_infix.read_name, [second_noun.read_name]])
 											rule_units.append(found_infix)
 											rule_units.append(second_noun)
-											feature_index[found_infix.read_name].append({rule_units = rule_units, rule_dict = rule, tags = []})
 								
-								if !feature_index.has(found_noun.read_name): feature_index[found_noun.read_name] = []
-								if !feature_index.has(unit.read_name): feature_index[unit.read_name] = []
-								if !feature_index.has(found_prop.read_name): feature_index[found_prop.read_name] = []
-								
-								feature_index[found_noun.read_name].append({rule_units = rule_units, rule_dict = rule, tags = []})
-								feature_index[unit.read_name].append({rule_units = rule_units, rule_dict = rule, tags = []})
-								feature_index[found_prop.read_name].append({rule_units = rule_units, rule_dict = rule, tags = []})
+								for used_word in flatten_array(rule):
+									if !feature_index.has(used_word): feature_index[used_word] = []
+									feature_index[used_word].append({rule_units = rule_units, rule_dict = rule, tags = ["baserule"]})
 		for feature_name in feature_index:
 			var feature = feature_index[feature_name]
 			for rule in feature:
@@ -232,7 +264,7 @@ func parse_text() -> void:
 					unit.color = Global.get_palette_color(unit.active_color)
 
 func check_condition(rule, unit):
-	if !rule["rule_dict"][3].is_empty():
+	if len(rule["rule_dict"]) > 3 and !rule["rule_dict"][3].is_empty():
 		var res = true
 		for condition in rule["rule_dict"][3]:
 			if condition[1].is_empty():
@@ -241,6 +273,21 @@ func check_condition(rule, unit):
 				res = res and infix_conditions[condition[0]].call(unit, condition[1][0])
 		return res
 	return true
+
+func handle_transforms() -> void:
+	var transforms = []
+	if feature_index.has("is"):
+		for rule in feature_index["is"]:
+			if level.object_palette.has(rule["rule_dict"][2]) or rule["rule_dict"][2] == "text":
+				for unit in units:
+					if unit.unit_name == rule["rule_dict"][0]:
+						if check_condition(rule, unit):
+							if rule["rule_dict"][2] == "text":
+								transforms.append([unit, "text_" + unit.read_name])
+							else:
+								transforms.append([unit, rule["rule_dict"][2]])
+	for transfomer in transforms:
+		transfomer[0].transform_to(transfomer[1])
 
 func get_units_with_effect(prop: String) -> Array[Unit]:
 	var returns: Array[Unit] = []
@@ -268,7 +315,8 @@ func hasfeature(target_unit: Unit, ruleVerb: String, ruleProp: String, at: Vecto
 					for rule in feature_index["text"]:
 						if (rule["rule_dict"][1] == ruleVerb) and (rule["rule_dict"][2] == ruleProp):
 							if (unit.pos == at):
-								return true
+								if check_condition(rule, unit):
+									return true
 	else:
 		var hasrule = false
 		if feature_index.has(target_unit.unit_name):

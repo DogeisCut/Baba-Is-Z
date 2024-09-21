@@ -5,6 +5,7 @@
 
 [node name="Unit" type="Node3D"]
 script = ExtResource("1_c6nsn")
+unit_name = ""
 
 [node name="Sprite" type="Sprite3D" parent="."]
 unique_name_in_owner = true

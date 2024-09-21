@@ -1,5 +1,11 @@
 res://world.tscn
-res://global.gd
 res://unit.tscn
 res://global.tscn
 res://unit.gd
+res://global.gd
+res://level.tscn
+res://level.gd
+res://Data/Worlds/baba/1.tscn
+res://Data/Worlds/baba/2.tscn
+res://camera.gd
+res://Data/Worlds/baba/3.tscn

@@ -35,3 +35,5 @@ func _process(delta):
 		camera_input = Vector2.ZERO
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	%ParsingCompassCamera.global_transform = camera.global_transform
+	%ParsingCompass.global_transform = global_transform

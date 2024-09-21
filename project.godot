@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Baba Is Z"
-run/main_scene="res://world.tscn"
+run/main_scene="res://Data/Worlds/baba/1.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 

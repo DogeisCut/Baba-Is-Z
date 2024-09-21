@@ -1,0 +1,174 @@
+[gd_scene load_steps=26 format=3 uid="uid://ckij74ymesmcj"]
+
+[ext_resource type="Script" path="res://level.gd" id="1_013dt"]
+[ext_resource type="Script" path="res://camera.gd" id="3_t6nr7"]
+[ext_resource type="AudioStream" uid="uid://ccig2h22kwv2y" path="res://Sounds/move/File0044.ogg" id="4_enpul"]
+[ext_resource type="AudioStream" uid="uid://dyr1b368npnq2" path="res://Sounds/move/File0047.ogg" id="5_lglq7"]
+[ext_resource type="AudioStream" uid="uid://def6p7uso6qjj" path="res://Sounds/move/File0057.ogg" id="6_wxfse"]
+[ext_resource type="AudioStream" uid="uid://u70nmu2of8ni" path="res://Sounds/move/File0048.ogg" id="7_fly4t"]
+[ext_resource type="AudioStream" uid="uid://bitr3k6osp0o3" path="res://Sounds/move/File0049.ogg" id="8_d2j2o"]
+[ext_resource type="AudioStream" uid="uid://lqyrinrvwslb" path="res://Sounds/move/File0050.ogg" id="9_p2l2k"]
+[ext_resource type="AudioStream" uid="uid://clef318yxbqk4" path="res://Sounds/move/File0051.ogg" id="10_cwuj6"]
+[ext_resource type="AudioStream" uid="uid://6028gyj02ats" path="res://Sounds/move/File0052.ogg" id="11_vms6l"]
+[ext_resource type="AudioStream" uid="uid://swrgeicg6oaa" path="res://Sounds/move/File0053.ogg" id="12_ioeid"]
+[ext_resource type="AudioStream" uid="uid://dr6oa7w5ujnp5" path="res://Sounds/move/File0054.ogg" id="13_irp4o"]
+[ext_resource type="AudioStream" uid="uid://sh0bymkkhsb5" path="res://Sounds/move/File0055.ogg" id="14_vsdvl"]
+
+[sub_resource type="Environment" id="Environment_14s3s"]
+background_mode = 1
+background_color = Color(0.0823529, 0.0941176, 0.121569, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7pos1"]
+shading_mode = 0
+albedo_color = Color(0.0313726, 0.0313726, 0.0313726, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ve0ts"]
+material = SubResource("StandardMaterial3D_7pos1")
+flip_faces = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k5frp"]
+shading_mode = 0
+albedo_color = Color(0.594405, 1, 0.084303, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_5invw"]
+material = SubResource("StandardMaterial3D_k5frp")
+top_radius = 0.0
+height = 4.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aui6x"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0.0240183, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_8jnc4"]
+material = SubResource("StandardMaterial3D_aui6x")
+top_radius = 0.0
+height = 4.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5fr8a"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_1mrey"]
+material = SubResource("StandardMaterial3D_5fr8a")
+radius = 0.75
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_owgqm"]
+shading_mode = 0
+albedo_color = Color(0, 0.565023, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1ltmd"]
+material = SubResource("StandardMaterial3D_owgqm")
+top_radius = 0.0
+height = 4.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_qbmb8"]
+streams_count = 11
+stream_0/stream = ExtResource("4_enpul")
+stream_1/stream = ExtResource("5_lglq7")
+stream_2/stream = ExtResource("7_fly4t")
+stream_3/stream = ExtResource("8_d2j2o")
+stream_4/stream = ExtResource("9_p2l2k")
+stream_5/stream = ExtResource("10_cwuj6")
+stream_6/stream = ExtResource("11_vms6l")
+stream_7/stream = ExtResource("12_ioeid")
+stream_8/stream = ExtResource("13_irp4o")
+stream_9/stream = ExtResource("14_vsdvl")
+stream_10/stream = ExtResource("6_wxfse")
+
+[node name="Level" type="Node3D"]
+script = ExtResource("1_013dt")
+
+[node name="Enviroment" type="WorldEnvironment" parent="."]
+unique_name_in_owner = true
+environment = SubResource("Environment_14s3s")
+
+[node name="Camroot" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_t6nr7")
+
+[node name="H" type="Node3D" parent="Camroot"]
+
+[node name="V" type="Node3D" parent="Camroot/H"]
+
+[node name="Camera3D" type="Camera3D" parent="Camroot/H/V"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
+current = true
+fov = 30.0
+size = 12.0
+
+[node name="LevelBounds" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(-5, 0, 7.54979e-07, 0, 5, 0, -7.54979e-07, 0, -5, 2.5, -2.5, 2.5)
+mesh = SubResource("BoxMesh_ve0ts")
+metadata/_edit_lock_ = true
+
+[node name="Units" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.605
+anchor_right = 0.222
+anchor_bottom = 1.0
+offset_top = -0.0400085
+offset_right = 0.255981
+grow_vertical = 0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/SubViewportContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(256, 256)
+render_target_update_mode = 4
+
+[node name="ParsingCompassCamera" type="Camera3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
+current = true
+fov = 30.0
+
+[node name="ParsingCompass" type="Node3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass"]
+transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, -2.5, 0)
+mesh = SubResource("CylinderMesh_5invw")
+skeleton = NodePath("../CanvasLayer/Control/SubViewportContainer/SubViewport")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.5, 0, 0)
+mesh = SubResource("CylinderMesh_8jnc4")
+skeleton = NodePath("../CanvasLayer/Control/SubViewportContainer/SubViewport")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_1mrey")
+skeleton = NodePath("../CanvasLayer/Control/SubViewportContainer/SubViewport")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 2.5)
+mesh = SubResource("CylinderMesh_1ltmd")
+skeleton = NodePath("../CanvasLayer/Control/SubViewportContainer/SubViewport")
+
+[node name="SoundMove" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_qbmb8")
