@@ -199,69 +199,204 @@ func parse_text() -> void:
 			for used_word in flatten_array(rule):
 				if !feature_index.has(used_word): feature_index[used_word] = []
 				feature_index[used_word].append({rule_units = [], rule_dict = rule, tags = ["baserule"]})
+		
+		var text_units = []
+		var first_words = []
 		for direction in parsing_directions:
 			for unit in units:
 				var is_text_unit: = (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")
 				if is_text_unit:
-					if unit.text_type == unit.TextType.VERB:
-						var found_nouns: Array[Unit] = []
-						var found_props: Array[Unit] = []
-						var found_prefixes: Array[Unit] = []
-						var found_infixes: Array[Unit] = []
-						var second_nouns: Array[Unit] = []
+					text_units.append(unit)
+					if !units_at(unit.pos + direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
+						if units_at(unit.pos - direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
+							first_words.append(unit)
+		
+		var sentences = []
+		for first_word in first_words:
+			for direction in parsing_directions:
+				var stacked_sentence = []
+				var i = 0
+				while true:
+					if units_at(first_word.pos + (direction * i)).is_empty():
+						break
+					var stacked_word = []
+					for unit in units_at(first_word.pos + (direction * i)):
+						if (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text"):
+							stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
+					if stacked_word.is_empty():
+						break
+					stacked_sentence.append(stacked_word)
+					i += 1
+				sentences.append(cartesian_product(stacked_sentence))
+		
+		var unique_sentences = []
+		var seen_sentence_nodes = []
+		
+		# remove dupes
+		for sentence in sentences:
+			var sentence_nodes_set = sentence.map(func(word): return word[2])
+			sentence_nodes_set.sort()
+			if sentence_nodes_set not in seen_sentence_nodes:
+				unique_sentences.append(sentence)
+				seen_sentence_nodes.append(sentence_nodes_set)
+		sentences = unique_sentences
+		
+		var final_sentence = []
+		for i in len(sentences):
+			var sentence = sentences[i]
+			
+			var node = 0
+			var previous_node = 0
+			var stop = false
+			var stage_3_reached = false
+			var stage_2_reached = false
+			var no_conds_after_this = false
+			var doing_cond = false
+			
+			var tiles = []
+			for j in len(sentence):
+				var word = sentence[j]
+				var word_type = word[1]
+				var prev_word = null
+				var prev_word_type = null
+				if (j-1)>-1:
+					prev_word = sentence[j-1]
+					prev_word[1]
+				
+				if (word_type != Unit.TextType.LETTER):
+					if (node == 0):
+						if (word_type == Unit.TextType.NOUN):
+							previous_node = node
+							node = 2
+						elif (word_type == Unit.TextType.PREFIX):
+							previous_node = node
+							node = 1
+						elif (word_type != Unit.TextType.NOT):
+							previous_node = node
+							node = -1
+							stop = true
+					elif (node == 1):
+						if (word_type == Unit.TextType.NOUN):
+							previous_node = node
+							node = 2
+						elif (word_type == Unit.TextType.AND):
+							previous_node = node
+							node = 2
+						elif (word_type != Unit.TextType.NOT):
+							previous_node = node
+							node = -1
+							stop = true
+					elif (node == 2):
+						if (j+1)<(len(sentence)):
+							if ((word_type == Unit.TextType.NOT) and (prev_word_type != Unit.TextType.NOT) and ((previous_node != 4) or doing_cond or !stage_3_reached)):
+								stage_2_reached = true
+								doing_cond = false
+								previous_node = node
+								no_conds_after_this = true
+								node = 3
+							elif (word_type == Unit.TextType.INFIX) and !stage_2_reached and !no_conds_after_this and (!doing_cond or (previous_node != 4)):
+								doing_cond = true
+								previous_node = node
+								node = 3
+							elif (word_type == Unit.TextType.AND) and (prev_word_type != Unit.TextType.NOT):
+								previous_node = node
+								node = 4
+							elif (word_type != Unit.TextType.NOT):
+								previous_node = node
+								node = -1
+								stop = true
+						else:
+							node = -1
+							stop = true
+					elif (node == 3):
+						stage_3_reached = true
 						
-						for potential_noun in units_at(unit.pos-direction):
-							if (potential_noun.unit_name.substr(0,5) == "text_") and (potential_noun.unit_type == "text") and potential_noun.text_type == potential_noun.TextType.NOUN:
-								found_nouns.append(potential_noun)
-						
-						for fn in found_nouns:
-							for potential_infix in units_at(fn.pos - direction):
-								if (potential_infix.unit_name.substr(0,5) == "text_") and (potential_infix.unit_type == "text") and potential_infix.text_type == potential_infix.TextType.INFIX:
-									found_infixes.append(potential_infix)
-								for potential_second_noun in units_at(potential_infix.pos - direction):
-									if (potential_second_noun.unit_name.substr(0,5) == "text_") and (potential_second_noun.unit_type == "text") and (potential_second_noun.text_type == potential_second_noun.TextType.NOUN or potential_second_noun.text_type == potential_infix.arg_type[0]):
-										second_nouns.append(potential_second_noun)
-							
-						if !found_infixes.is_empty() and !second_nouns.is_empty() and !found_nouns.is_empty():
-							var temp = found_nouns
-							found_nouns = second_nouns
-							second_nouns = temp
-							
-						for fn in found_nouns:
-							for potential_prefix in units_at(fn.pos-direction):
-								if (potential_prefix.unit_name.substr(0,5) == "text_") and (potential_prefix.unit_type == "text") and potential_prefix.text_type == potential_prefix.TextType.PREFIX:
-									found_prefixes.append(potential_prefix)
-							
-						for potential_prop in units_at(Vector3i(unit.pos)+direction):
-							if (potential_prop.unit_name.substr(0,5) == "text_") and (potential_prop.unit_type == "text") and ((potential_prop.text_type == potential_prop.TextType.PROP) or (potential_prop.text_type == potential_prop.TextType.NOUN)):
-								found_props.append(potential_prop)
-						
-						
-						for found_noun in found_nouns:
-							for found_prop in found_props:
-								var rule = [found_noun.read_name, unit.read_name, found_prop.read_name, []]
-								var rule_units = [found_noun, unit, found_prop]
-								
-								if !found_prefixes.is_empty():
-									for found_prefix in found_prefixes:
-										rule[3].append([found_prefix.read_name, []])
-										rule_units.append(found_prefix)
-								
-								if !found_infixes.is_empty() and !second_nouns.is_empty():
-									for found_infix in found_infixes:
-										for second_noun in second_nouns:
-											rule[3].append([found_infix.read_name, [second_noun.read_name]])
-											rule_units.append(found_infix)
-											rule_units.append(second_noun)
-								
-								for used_word in flatten_array(rule):
-									if !feature_index.has(used_word): feature_index[used_word] = []
-									feature_index[used_word].append({rule_units = rule_units, rule_dict = rule, tags = ["baserule"]})
+						if (word_type == Unit.TextType.NOUN) or (word_type == Unit.TextType.PROP) or (word_type == Unit.TextType.CUSTOMOBJECT):
+							previous_node = node
+							node = 5
+						elif (word_type != Unit.TextType.NOT):
+							node = -1
+							stop = true
+					elif (node == 4):
+						if (j+1)<(len(sentence)):
+							if (word_type == Unit.TextType.NOUN) or (((word_type == Unit.TextType.PROP) and stage_3_reached) or ((word_type == Unit.TextType.CUSTOMOBJECT) and stage_3_reached)):
+								previous_node = node
+								node = 2
+							elif ((word_type == Unit.TextType.VERB) and stage_3_reached) and !doing_cond and (prev_word_type == Unit.TextType.NOT):
+								stage_2_reached = true
+								no_conds_after_this = true
+								previous_node = node
+								node = 3
+							elif (word_type == Unit.TextType.INFIX) and !no_conds_after_this and ((prev_word_type != Unit.TextType.AND) or ((prev_word_type == Unit.TextType.AND) and doing_cond)):
+								doing_cond = true
+								stage_2_reached = true
+								previous_node = node
+								node = 3
+							elif (word_type != Unit.TextType.NOT):
+								previous_node = node
+								node = -1
+								stop = true
+						else:
+							node = -1
+							stop = true
+					elif (node == 5):
+						if (j+1)<(len(sentence)):
+							if (word_type == Unit.TextType.VERB) and doing_cond and (prev_word_type != Unit.TextType.VERB):
+								stage_2_reached = true
+								doing_cond = false
+								previous_node = node
+								no_conds_after_this = true
+								node = 3
+							elif (word_type == Unit.TextType.AND) and (prev_word_type != Unit.TextType.NOT):
+								previous_node = node
+								node = 4
+							elif (word_type != Unit.TextType.NOT):
+								previous_node = node
+								node = -1
+								stop = true
+						else:
+							node = -1
+							stop = true
+					elif (node == 6):
+						if (word_type == Unit.TextType.PREFIX):
+							previous_node = node
+							node = 1
+						elif (word_type != Unit.TextType.NOT):
+							previous_node = node
+							node = -1
+							stop = true
+				
+				if (stop == true):
+					if (len(sentence) >= 3):
+						tiles.append(word)
+			print(tiles)
+			
+			#for j in range(len(sentence)):
+				#var word = sentence[j]
+				#var next_word = null
+				#var prev_word = null
+				#if (j+1)<(len(sentence)):
+					#next_word = sentence[j+1]
+				#if (j-1)>-1:
+					#prev_word = sentence[j-1]
+				
 		for feature_name in feature_index:
 			var feature = feature_index[feature_name]
 			for rule in feature:
 				for unit in rule["rule_units"]:
 					unit.color = Global.get_palette_color(unit.active_color)
+
+func cartesian_product(arrays: Array, current_index: int = 0, current_combination: Array = []):
+	if current_index == arrays.size():
+		return current_combination
+	
+	var result = []
+	for element in arrays[current_index]:
+		var new_combination = current_combination.duplicate()
+		new_combination.append(element)
+		result += cartesian_product(arrays, current_index + 1, new_combination)
+	
+	return result
 
 func check_condition(rule, unit):
 	if len(rule["rule_dict"]) > 3 and !rule["rule_dict"][3].is_empty():
