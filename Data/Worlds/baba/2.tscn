@@ -187,6 +187,3 @@ unit_name = "jiji"
 [node name="Unit14" parent="Units" index="19" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -4.5, 1.5)
 unit_name = "jiji"
-
-[node name="SubViewport" parent="CanvasLayer/Control/SubViewportContainer" index="0"]
-size = Vector2i(255, 256)

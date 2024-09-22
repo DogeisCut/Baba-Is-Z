@@ -538,6 +538,3 @@ unit_name = "text_is"
 [node name="text_push_unit" parent="Units" index="77" instance=ExtResource("1_v1e1r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, -11.5, 2.5)
 unit_name = "text_push"
-
-[node name="SubViewport" parent="CanvasLayer/Control/SubViewportContainer" index="0"]
-size = Vector2i(255, 256)

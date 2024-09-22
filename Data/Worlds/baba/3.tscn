@@ -103,6 +103,3 @@ unit_name = "text_feeling"
 [node name="Unit8" parent="Units" index="7" instance=ExtResource("2_cv25y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, -6.5, 5.5)
 unit_name = "baba"
-
-[node name="SubViewport" parent="CanvasLayer/Control/SubViewportContainer" index="0"]
-size = Vector2i(255, 256)

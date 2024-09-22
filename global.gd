@@ -212,9 +212,7 @@ func parse_text() -> void:
 							if !units_at(unit.pos - direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
 								first_verbs.append([unit, direction])
 		
-		# seperating the sentences into multiple sentences when using AND is this code block's job (a long with many other things)
-		# The only ands left will be those left in conditions.
-		# Nots will be reduced to either 1 or none
+		# this finds text blocks and stacked ones n shit
 		var sentences = []
 		for first_verb_dir in first_verbs:
 			var first_verb = first_verb_dir[0]
@@ -228,7 +226,6 @@ func parse_text() -> void:
 					i += dir
 					
 					var stacked_units = units_at(first_verb.pos + (direction * i))
-					var previous_stacked_units = units_at(first_verb.pos + (direction * i-dir))
 					if stacked_units.is_empty():
 						break
 						
@@ -236,19 +233,17 @@ func parse_text() -> void:
 					for unit in stacked_units:
 						if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
 							stop = true
-							break
-						if not (stage == 0 and stacked_units)
+							continue
 						stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
 					
 					if stop:
-						break
+						continue
 					if !stacked_word.is_empty():
 						stacked_sentence.append(stacked_word)
 					
 				stacked_sentence.reverse()
 			if !stacked_sentence.is_empty():
 				sentences.append(cartesian_product(stacked_sentence))
-		
 		
 		var unique_sentences = []
 		var seen_sentence_nodes = []
@@ -261,11 +256,23 @@ func parse_text() -> void:
 				seen_sentence_nodes.append(sentence_nodes_set)
 		sentences = unique_sentences
 		
-		print(sentences)
-		
-		# This block assumes the sentences provided to it are valid, contain only ands in conditions, and there are only 1 nots or none
+		# seperating the sentences into multiple sentences when using AND is this code block's job (a long with many other things)
+		# The only ands left will be those left in conditions.
+		# Nots will be reduced to either 1 or none
+		var final_sentences = []
 		for i in len(sentences):
 			var sentence = sentences[i]
+			var final_sentence = []
+			for j in len(sentence):
+				var word = sentence[j]
+				final_sentence.append(word)
+			final_sentences.append(final_sentence)
+		
+		print(final_sentences)
+		
+		# This block assumes the sentences provided to it are valid, contain only ands in conditions, and there are only 1 nots or none
+		for i in len(final_sentences):
+			var sentence = final_sentences[i]
 			
 			var target = null
 			var verb = null
@@ -290,7 +297,7 @@ func parse_text() -> void:
 				if word[1] == Unit.TextType.VERB:
 					verb = word
 					continue
-				if word[1] == Unit.TextType.PROP:
+				if word[1] == Unit.TextType.PROP || word[1] == Unit.TextType.NOUN:
 					property = word
 					continue
 			if !feature_index.has(target[0]): feature_index[target[0]] = []
