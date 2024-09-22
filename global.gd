@@ -211,7 +211,9 @@ func parse_text() -> void:
 						if !units_at(unit.pos + direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
 							if !units_at(unit.pos - direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
 								first_verbs.append(unit)
-		
+		# seperating the sentences into multiple sentences when using AND is this code block's job (a long with many other things)
+		# The only ands left will be those left in conditions.
+		# Nots will be reduced to either 1 or none
 		var sentences = []
 		for first_verb in first_verbs:
 			var stacked_sentence = [[[first_verb.read_name, first_verb.text_type, [first_verb], 1]]]
@@ -272,6 +274,7 @@ func parse_text() -> void:
 		
 		print(sentences)
 		
+		# This block assumes the sentences provided to it are valid, contain only ands in conditions, and there are only 1 nots or none
 		for i in len(sentences):
 			var sentence = sentences[i]
 			
@@ -279,11 +282,19 @@ func parse_text() -> void:
 			var verb = null
 			var property = null
 			
+			var doing_conds = false
+			
+			var conds = []
+			
 			var rule_units = []
 			var rule_dict = []
 			
 			for j in len(sentence):
 				var word = sentence[j]
+				rule_units.append(word[2])
+				if word[1] == Unit.TextType.PREFIX:
+					conds.append([word[0], []])
+					continue
 				if word[1] == Unit.TextType.NOUN and !target:
 					target = word
 					continue
@@ -296,8 +307,7 @@ func parse_text() -> void:
 			if !feature_index.has(target[0]): feature_index[target[0]] = []
 			if !feature_index.has(verb[0]): feature_index[verb[0]] = []
 			if !feature_index.has(property[0]): feature_index[property[0]] = []
-			rule_units = [target[2], verb[2], property[2]]
-			rule_dict = [target[0], verb[0], property[0]]
+			rule_dict = [target[0], verb[0], property[0], conds]
 			feature_index[target[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
 			feature_index[verb[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
 			feature_index[property[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
