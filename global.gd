@@ -220,20 +220,28 @@ func parse_text() -> void:
 			var first_verb = first_verb_dir[0]
 			var direction = first_verb_dir[1]
 			var stacked_sentence = [[[first_verb.read_name, first_verb.text_type, [first_verb], 1]]]
+			var stage = 0
 			for dir in [1, -1]:
 				var i = 0
+				var stop = false
 				while true:
 					i += dir
-						
+					
 					var stacked_units = units_at(first_verb.pos + (direction * i))
+					var previous_stacked_units = units_at(first_verb.pos + (direction * i-dir))
 					if stacked_units.is_empty():
 						break
 						
 					var stacked_word = []
 					for unit in stacked_units:
-						if (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text"):
-							stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
+						if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
+							stop = true
+							break
+						if not (stage == 0 and stacked_units)
+						stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
 					
+					if stop:
+						break
 					if !stacked_word.is_empty():
 						stacked_sentence.append(stacked_word)
 					
