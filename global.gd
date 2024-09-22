@@ -201,38 +201,67 @@ func parse_text() -> void:
 				feature_index[used_word].append({rule_units = [], rule_dict = rule, tags = ["baserule"]})
 		
 		var text_units = []
-		var first_words = []
+		var first_verbs = []
 		for direction in parsing_directions:
 			for unit in units:
 				var is_text_unit: = (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")
 				if is_text_unit:
 					text_units.append(unit)
-					if !units_at(unit.pos + direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
-						if units_at(unit.pos - direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
-							first_words.append(unit)
+					if unit.text_type == Unit.TextType.VERB:
+						if !units_at(unit.pos + direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
+							if !units_at(unit.pos - direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
+								first_verbs.append(unit)
 		
 		var sentences = []
-		for first_word in first_words:
+		for first_verb in first_verbs:
+			var stacked_sentence = [[[first_verb.read_name, first_verb.text_type, [first_verb], 1]]]
 			for direction in parsing_directions:
-				var stacked_sentence = []
 				var i = 0
+				var valid = true
 				while true:
-					if units_at(first_word.pos + (direction * i)).is_empty():
+					i += 1
+					if units_at(first_verb.pos + (direction * i)).is_empty():
 						break
 					var stacked_word = []
-					for unit in units_at(first_word.pos + (direction * i)):
+					for unit in units_at(first_verb.pos + (direction * i)):
 						if (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text"):
-							stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
+							if unit.text_type == Unit.TextType.PROP:
+								stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
+							else:
+								valid = false
+						else:
+							valid = false
 					if stacked_word.is_empty():
 						break
 					stacked_sentence.append(stacked_word)
-					i += 1
+				stacked_sentence.reverse()
+				i = 0
+				valid = true
+				while true:
+					i -= 1
+					if units_at(first_verb.pos + (direction * i)).is_empty():
+						break
+					var stacked_word = []
+					for unit in units_at(first_verb.pos + (direction * i)):
+						if (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text"):
+							if unit.text_type == Unit.TextType.NOUN:
+								stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
+							else:
+								valid = false
+						else:
+							valid = false
+					if stacked_word.is_empty():
+						break
+					stacked_sentence.append(stacked_word)
+				stacked_sentence.reverse()
+				if !valid:
+					stacked_sentence = []
+			if !stacked_sentence.is_empty():
 				sentences.append(cartesian_product(stacked_sentence))
 		
 		var unique_sentences = []
 		var seen_sentence_nodes = []
 		
-		# remove dupes
 		for sentence in sentences:
 			var sentence_nodes_set = sentence.map(func(word): return word[2])
 			sentence_nodes_set.sort()
@@ -241,150 +270,44 @@ func parse_text() -> void:
 				seen_sentence_nodes.append(sentence_nodes_set)
 		sentences = unique_sentences
 		
-		var final_sentence = []
+		print(sentences)
+		
 		for i in len(sentences):
 			var sentence = sentences[i]
 			
-			var node = 0
-			var previous_node = 0
-			var stop = false
-			var stage_3_reached = false
-			var stage_2_reached = false
-			var no_conds_after_this = false
-			var doing_cond = false
+			var target = null
+			var verb = null
+			var property = null
 			
-			var tiles = []
+			var rule_units = []
+			var rule_dict = []
+			
 			for j in len(sentence):
 				var word = sentence[j]
-				var word_type = word[1]
-				var prev_word = null
-				var prev_word_type = null
-				if (j-1)>-1:
-					prev_word = sentence[j-1]
-					prev_word[1]
-				
-				if (word_type != Unit.TextType.LETTER):
-					if (node == 0):
-						if (word_type == Unit.TextType.NOUN):
-							previous_node = node
-							node = 2
-						elif (word_type == Unit.TextType.PREFIX):
-							previous_node = node
-							node = 1
-						elif (word_type != Unit.TextType.NOT):
-							previous_node = node
-							node = -1
-							stop = true
-					elif (node == 1):
-						if (word_type == Unit.TextType.NOUN):
-							previous_node = node
-							node = 2
-						elif (word_type == Unit.TextType.AND):
-							previous_node = node
-							node = 2
-						elif (word_type != Unit.TextType.NOT):
-							previous_node = node
-							node = -1
-							stop = true
-					elif (node == 2):
-						if (j+1)<(len(sentence)):
-							if ((word_type == Unit.TextType.NOT) and (prev_word_type != Unit.TextType.NOT) and ((previous_node != 4) or doing_cond or !stage_3_reached)):
-								stage_2_reached = true
-								doing_cond = false
-								previous_node = node
-								no_conds_after_this = true
-								node = 3
-							elif (word_type == Unit.TextType.INFIX) and !stage_2_reached and !no_conds_after_this and (!doing_cond or (previous_node != 4)):
-								doing_cond = true
-								previous_node = node
-								node = 3
-							elif (word_type == Unit.TextType.AND) and (prev_word_type != Unit.TextType.NOT):
-								previous_node = node
-								node = 4
-							elif (word_type != Unit.TextType.NOT):
-								previous_node = node
-								node = -1
-								stop = true
-						else:
-							node = -1
-							stop = true
-					elif (node == 3):
-						stage_3_reached = true
-						
-						if (word_type == Unit.TextType.NOUN) or (word_type == Unit.TextType.PROP) or (word_type == Unit.TextType.CUSTOMOBJECT):
-							previous_node = node
-							node = 5
-						elif (word_type != Unit.TextType.NOT):
-							node = -1
-							stop = true
-					elif (node == 4):
-						if (j+1)<(len(sentence)):
-							if (word_type == Unit.TextType.NOUN) or (((word_type == Unit.TextType.PROP) and stage_3_reached) or ((word_type == Unit.TextType.CUSTOMOBJECT) and stage_3_reached)):
-								previous_node = node
-								node = 2
-							elif ((word_type == Unit.TextType.VERB) and stage_3_reached) and !doing_cond and (prev_word_type == Unit.TextType.NOT):
-								stage_2_reached = true
-								no_conds_after_this = true
-								previous_node = node
-								node = 3
-							elif (word_type == Unit.TextType.INFIX) and !no_conds_after_this and ((prev_word_type != Unit.TextType.AND) or ((prev_word_type == Unit.TextType.AND) and doing_cond)):
-								doing_cond = true
-								stage_2_reached = true
-								previous_node = node
-								node = 3
-							elif (word_type != Unit.TextType.NOT):
-								previous_node = node
-								node = -1
-								stop = true
-						else:
-							node = -1
-							stop = true
-					elif (node == 5):
-						if (j+1)<(len(sentence)):
-							if (word_type == Unit.TextType.VERB) and doing_cond and (prev_word_type != Unit.TextType.VERB):
-								stage_2_reached = true
-								doing_cond = false
-								previous_node = node
-								no_conds_after_this = true
-								node = 3
-							elif (word_type == Unit.TextType.AND) and (prev_word_type != Unit.TextType.NOT):
-								previous_node = node
-								node = 4
-							elif (word_type != Unit.TextType.NOT):
-								previous_node = node
-								node = -1
-								stop = true
-						else:
-							node = -1
-							stop = true
-					elif (node == 6):
-						if (word_type == Unit.TextType.PREFIX):
-							previous_node = node
-							node = 1
-						elif (word_type != Unit.TextType.NOT):
-							previous_node = node
-							node = -1
-							stop = true
-				
-				if (stop == true):
-					if (len(sentence) >= 3):
-						tiles.append(word)
-			print(tiles)
-			
-			#for j in range(len(sentence)):
-				#var word = sentence[j]
-				#var next_word = null
-				#var prev_word = null
-				#if (j+1)<(len(sentence)):
-					#next_word = sentence[j+1]
-				#if (j-1)>-1:
-					#prev_word = sentence[j-1]
-				
+				if word[1] == Unit.TextType.NOUN and !target:
+					target = word
+					continue
+				if word[1] == Unit.TextType.VERB:
+					verb = word
+					continue
+				if word[1] == Unit.TextType.PROP:
+					property = word
+					continue
+			if !feature_index.has(target[0]): feature_index[target[0]] = []
+			if !feature_index.has(verb[0]): feature_index[verb[0]] = []
+			if !feature_index.has(property[0]): feature_index[property[0]] = []
+			rule_units = [target[2], verb[2], property[2]]
+			rule_dict = [target[0], verb[0], property[0]]
+			feature_index[target[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
+			feature_index[verb[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
+			feature_index[property[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
+		
 		for feature_name in feature_index:
 			var feature = feature_index[feature_name]
 			for rule in feature:
-				for unit in rule["rule_units"]:
-					unit.color = Global.get_palette_color(unit.active_color)
+				for rule_units in rule["rule_units"]:
+					for unit in rule_units:
+						unit.color = Global.get_palette_color(unit.active_color)
 
 func cartesian_product(arrays: Array, current_index: int = 0, current_combination: Array = []):
 	if current_index == arrays.size():

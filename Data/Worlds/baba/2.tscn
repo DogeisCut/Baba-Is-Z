@@ -188,14 +188,5 @@ unit_name = "jiji"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -4.5, 1.5)
 unit_name = "jiji"
 
-[node name="MeshInstance3D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass" index="0"]
-transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, -2.5, 0)
-
-[node name="MeshInstance3D2" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass" index="1"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.5, 0, 0)
-
-[node name="MeshInstance3D4" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass" index="2"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-
-[node name="MeshInstance3D3" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/ParsingCompass" index="3"]
-transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 2.5)
+[node name="SubViewport" parent="CanvasLayer/Control/SubViewportContainer" index="0"]
+size = Vector2i(255, 256)
