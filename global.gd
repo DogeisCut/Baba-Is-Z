@@ -217,62 +217,72 @@ func parse_text() -> void:
 		for first_verb_dir in first_verbs:
 			var first_verb = first_verb_dir[0]
 			var direction = first_verb_dir[1]
-			var stacked_sentence = [[[first_verb.read_name, first_verb.text_type, [first_verb], 1]]]
-			var stage = 0
-			for dir in [1, -1]:
-				var i = 0
-				var stop = false
-				while true:
-					i += dir
-					
-					var stacked_units = units_at(first_verb.pos + (direction * i))
-					if stacked_units.is_empty():
+			var sentence = [[first_verb.read_name, first_verb.text_type, [first_verb], 1]]
+			var last_unit = first_verb
+			var i = 0
+			while true:
+				i += 1
+				
+				var units = units_at(first_verb.pos + (direction * i))
+				if units.is_empty():
+					break
+				var unit = units[0]
+				if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
+					break
+				if last_unit.text_type == Unit.TextType.VERB:
+					if not (first_verb.arg_type.has(unit.text_type) or unit.text_type == Unit.TextType.NOT):
 						break
-						
-					var stacked_word = []
-					for unit in stacked_units:
-						if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
-							stop = true
-							continue
-						stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
-					
-					if stop:
-						continue
-					if !stacked_word.is_empty():
-						stacked_sentence.append(stacked_word)
-					
-				stacked_sentence.reverse()
-			if !stacked_sentence.is_empty():
-				sentences.append(cartesian_product(stacked_sentence))
+				if last_unit.text_type == Unit.TextType.PROP:
+					if not unit.text_type == Unit.TextType.AND:
+						break
+				sentence.push_back([unit.read_name, unit.text_type, [unit], 1])
+				last_unit = unit
+			sentence.reverse()
+			i = 0
+			last_unit = first_verb
+			while true:
+				i += -1
+				
+				var units = units_at(first_verb.pos + (direction * i))
+				if units.is_empty():
+					break
+				var unit = units[0]
+				if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
+					break
+				if last_unit.text_type == Unit.TextType.VERB:
+					if not unit.text_type == Unit.TextType.NOUN:
+						break
+				if last_unit.text_type == Unit.TextType.NOUN:
+					if not (unit.text_type == Unit.TextType.NOT or unit.text_type == Unit.TextType.PREFIX or unit.text_type == Unit.TextType.INFIX or unit.text_type == Unit.TextType.AND):
+						break
+				if last_unit.text_type == Unit.TextType.PREFIX:
+					if not (unit.text_type == Unit.TextType.AND or unit.text_type == Unit.TextType.NOT):
+						break
+				if last_unit.text_type == Unit.TextType.INFIX:
+					if not (unit.text_type == Unit.TextType.NOUN or unit.text_type == Unit.TextType.NOT):
+						break
+				sentence.push_back([unit.read_name, unit.text_type, [unit], 1])
+				last_unit = unit
+			sentence.reverse()
+			if len(sentence) >= 3:
+				sentences.append(sentence)
 		
-		var unique_sentences = []
-		var seen_sentence_nodes = []
+		#var unique_sentences = []
+		#var seen_sentence_nodes = []
+		#
+		#for sentence in sentences:
+			#var sentence_nodes_set = sentence.map(func(word): return word[2])
+			#sentence_nodes_set.sort()
+			#if sentence_nodes_set not in seen_sentence_nodes:
+				#unique_sentences.append(sentence)
+				#seen_sentence_nodes.append(sentence_nodes_set)
+		#sentences = unique_sentences
 		
-		for sentence in sentences:
-			var sentence_nodes_set = sentence.map(func(word): return word[2])
-			sentence_nodes_set.sort()
-			if sentence_nodes_set not in seen_sentence_nodes:
-				unique_sentences.append(sentence)
-				seen_sentence_nodes.append(sentence_nodes_set)
-		sentences = unique_sentences
-		
-		# seperating the sentences into multiple sentences when using AND is this code block's job (a long with many other things)
-		# The only ands left will be those left in conditions.
-		# Nots will be reduced to either 1 or none
-		var final_sentences = []
-		for i in len(sentences):
-			var sentence = sentences[i]
-			var final_sentence = []
-			for j in len(sentence):
-				var word = sentence[j]
-				final_sentence.append(word)
-			final_sentences.append(final_sentence)
-		
-		print(final_sentences)
+		print(sentences)
 		
 		# This block assumes the sentences provided to it are valid, contain only ands in conditions, and there are only 1 nots or none
-		for i in len(final_sentences):
-			var sentence = final_sentences[i]
+		for i in len(sentences):
+			var sentence = sentences[i]
 			
 			var target = null
 			var verb = null
@@ -290,6 +300,9 @@ func parse_text() -> void:
 				rule_units.append(word[2])
 				if word[1] == Unit.TextType.PREFIX:
 					conds.append([word[0], []])
+					continue
+				if word[1] == Unit.TextType.INFIX:
+					conds.append([word[0], [sentence[j+1][0]]])
 					continue
 				if word[1] == Unit.TextType.NOUN and !target:
 					target = word
