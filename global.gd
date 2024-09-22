@@ -210,56 +210,37 @@ func parse_text() -> void:
 					if unit.text_type == Unit.TextType.VERB:
 						if !units_at(unit.pos + direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
 							if !units_at(unit.pos - direction).filter(func(at): return ((at.unit_name.substr(0,5) == "text_") and (at.unit_type == "text"))).is_empty():
-								first_verbs.append(unit)
+								first_verbs.append([unit, direction])
+		
 		# seperating the sentences into multiple sentences when using AND is this code block's job (a long with many other things)
 		# The only ands left will be those left in conditions.
 		# Nots will be reduced to either 1 or none
 		var sentences = []
-		for first_verb in first_verbs:
+		for first_verb_dir in first_verbs:
+			var first_verb = first_verb_dir[0]
+			var direction = first_verb_dir[1]
 			var stacked_sentence = [[[first_verb.read_name, first_verb.text_type, [first_verb], 1]]]
-			for direction in parsing_directions:
+			for dir in [1, -1]:
 				var i = 0
-				var valid = true
 				while true:
-					i += 1
-					if units_at(first_verb.pos + (direction * i)).is_empty():
+					i += dir
+						
+					var stacked_units = units_at(first_verb.pos + (direction * i))
+					if stacked_units.is_empty():
 						break
+						
 					var stacked_word = []
-					for unit in units_at(first_verb.pos + (direction * i)):
+					for unit in stacked_units:
 						if (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text"):
-							if unit.text_type == Unit.TextType.PROP:
-								stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
-							else:
-								valid = false
-						else:
-							valid = false
-					if stacked_word.is_empty():
-						break
-					stacked_sentence.append(stacked_word)
+							stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
+					
+					if !stacked_word.is_empty():
+						stacked_sentence.append(stacked_word)
+					
 				stacked_sentence.reverse()
-				i = 0
-				valid = true
-				while true:
-					i -= 1
-					if units_at(first_verb.pos + (direction * i)).is_empty():
-						break
-					var stacked_word = []
-					for unit in units_at(first_verb.pos + (direction * i)):
-						if (unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text"):
-							if unit.text_type == Unit.TextType.NOUN:
-								stacked_word.append([unit.read_name, unit.text_type, [unit], 1])
-							else:
-								valid = false
-						else:
-							valid = false
-					if stacked_word.is_empty():
-						break
-					stacked_sentence.append(stacked_word)
-				stacked_sentence.reverse()
-				if !valid:
-					stacked_sentence = []
 			if !stacked_sentence.is_empty():
 				sentences.append(cartesian_product(stacked_sentence))
+		
 		
 		var unique_sentences = []
 		var seen_sentence_nodes = []
