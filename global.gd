@@ -321,9 +321,10 @@ func parse_text() -> void:
 				var unit = units[0]
 				if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
 					break
-				#if last_unit.text_type == Unit.TextType.VERB:
-					#if not unit.text_type == Unit.TextType.NOUN:
-						#break
+				
+				if last_unit.text_type == Unit.TextType.VERB:
+					if not (unit.text_type == Unit.TextType.NOUN or unit.text_type == Unit.TextType.PROP):
+						break
 				if last_unit.text_type == Unit.TextType.NOUN:
 					if not (unit.text_type == Unit.TextType.NOT or unit.text_type == Unit.TextType.PREFIX or unit.text_type == Unit.TextType.INFIX or unit.text_type == Unit.TextType.AND):
 						break
@@ -336,42 +337,42 @@ func parse_text() -> void:
 				sentence.push_back([unit.read_name, unit.text_type, [unit], 1])
 				last_unit = unit
 			sentence.reverse()
-			if len(sentence) >= 3:
+			if len(sentence) >= 3 and (sentence[0][1] == Unit.TextType.NOT or sentence[0][1] == Unit.TextType.NOUN or sentence[0][1] == Unit.TextType.PREFIX or sentence[0][1] == Unit.TextType.INFIX):
 				sentences.append(sentence)
 		
 		# Additional validation:
 		# Sometimes you just gotta check the right way around.
-		var validated_sentences = []
-		for i in len(sentences):
-			var validated_sentence = []
-			var sentence = sentences[i]
-			for j in len(sentence):
-				var word = sentence[j]
-				var last_word = null
-				var next_word = null
-				if j>0:
-					last_word = sentence[j-1]
-				if j<len(sentence)-1:
-					next_word = sentence[j+1]
-				if word[1] == Unit.TextType.INFIX:
-					if last_word == null:
-						continue
-					if not (word[2][0].arg_type.has(next_word[1]) or word[2][0].arg_extra.has(next_word[0])):
-						continue
-				if word[1] == Unit.TextType.PROP:
-					if last_word == null:
-						continue
-					if not (last_word[2][0].arg_type.has(word[1]) or last_word[2][0].arg_extra.has(word[0])):
-						continue
-				if word[1] == Unit.TextType.NOUN:
-					if next_word == null:
-						continue
-					if not (next_word[1] == Unit.TextType.AND or next_word[1] == Unit.TextType.VERB or next_word[1] == Unit.TextType.INFIX):
-						continue
-				validated_sentence.append(word)
-			if len(validated_sentence) >= 3:
-				validated_sentences.append(validated_sentence)
-		sentences = validated_sentences
+		#var validated_sentences = []
+		#for i in len(sentences):
+			#var validated_sentence = []
+			#var sentence = sentences[i]
+			#for j in len(sentence):
+				#var word = sentence[j]
+				#var last_word = null
+				#var next_word = null
+				#if j>0:
+					#last_word = sentence[j-1]
+				#if j<len(sentence)-1:
+					#next_word = sentence[j+1]
+				#if word[1] == Unit.TextType.INFIX:
+					#if last_word == null:
+						#continue
+					#if not (word[2][0].arg_type.has(next_word[1]) or word[2][0].arg_extra.has(next_word[0])):
+						#continue
+				#if word[1] == Unit.TextType.PROP:
+					#if last_word == null:
+						#continue
+					#if not (last_word[2][0].arg_type.has(word[1]) or last_word[2][0].arg_extra.has(word[0])):
+						#continue
+				#if word[1] == Unit.TextType.NOUN:
+					#if next_word == null:
+						#continue
+					#if not (next_word[1] == Unit.TextType.AND or next_word[1] == Unit.TextType.VERB or next_word[1] == Unit.TextType.INFIX):
+						#continue
+				#validated_sentence.append(word)
+			#if len(validated_sentence) >= 3:
+				#validated_sentences.append(validated_sentence)
+		#sentences = validated_sentences
 			
 		#var unique_sentences = []
 		#var seen_sentence_nodes = []
@@ -384,7 +385,7 @@ func parse_text() -> void:
 				#seen_sentence_nodes.append(sentence_nodes_set)
 		#sentences = unique_sentences
 		
-		#print(sentences)
+		print(sentences)
 		
 		# This block assumes the sentences provided to it are valid, contain only ands in conditions, and there are only 1 nots or none
 		for i in len(sentences):
@@ -403,21 +404,29 @@ func parse_text() -> void:
 			
 			for j in len(sentence):
 				var word = sentence[j]
-				rule_units.append(word[2])
+				var last_word = null
+				if j>0:
+					last_word = sentence[j-1]
 				if word[1] == Unit.TextType.PREFIX:
 					conds.append([word[0], []])
+					rule_units.append(word[2])
 					continue
 				if word[1] == Unit.TextType.INFIX:
-					conds.append([word[0], [sentence[j+1][0]]])
+					if last_word != null and last_word[1] == Unit.TextType.NOUN:
+						conds.append([word[0], [sentence[j+1][0]]])
+						rule_units.append(word[2])
 					continue
 				if word[1] == Unit.TextType.NOUN and !target:
 					target = word
+					rule_units.append(word[2])
 					continue
 				if word[1] == Unit.TextType.VERB:
 					verb = word
+					rule_units.append(word[2])
 					continue
 				if word[1] == Unit.TextType.PROP || word[1] == Unit.TextType.NOUN:
 					property = word
+					rule_units.append(word[2])
 					continue
 			if !feature_index.has(target[0]): feature_index[target[0]] = []
 			if !feature_index.has(verb[0]): feature_index[verb[0]] = []
@@ -427,6 +436,7 @@ func parse_text() -> void:
 			feature_index[verb[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
 			feature_index[property[0]].append({rule_units = rule_units, rule_dict = rule_dict, tags = []})
 		
+		print(feature_index)
 		for feature_name in feature_index:
 			var feature = feature_index[feature_name]
 			for rule in feature:
