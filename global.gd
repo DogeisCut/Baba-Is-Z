@@ -140,6 +140,10 @@ func do_movement(action: TurnActions) -> void:
 	for unit in get_units_with_effect("you"):
 		if action != TurnActions.IDLE:
 			unit.move(directions[action][0], directions[action][1], false)
+	for unit in get_units_with_effect("move"):
+		if !unit.move(unit.direction_vectors[unit.dir], unit.dir, false):
+			unit.dir = unit.directions_180[unit.dir]
+			unit.move(unit.direction_vectors[unit.dir], unit.dir, false)
 
 func block(action: TurnActions) -> void:
 	for color in colors.keys():

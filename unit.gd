@@ -19,6 +19,22 @@ enum Direction {
 	UP = 8,
 	DOWN = 24,
 }
+static var direction_vectors = {
+	Direction.RIGHT: Vector3i(1,0,0),
+	Direction.FORAWRD: Vector3i(0,0,1),
+	Direction.LEFT: Vector3i(-1,0,0),
+	Direction.BACKWARD: Vector3i(0,0,-1),
+	Direction.UP: Vector3i(0,-1,0),
+	Direction.DOWN: Vector3i(0,1,0),
+}
+static var directions_180 = {
+	Direction.RIGHT: Direction.LEFT,
+	Direction.FORAWRD: Direction.BACKWARD,
+	Direction.LEFT: Direction.RIGHT,
+	Direction.BACKWARD: Direction.FORAWRD,
+	Direction.UP: Direction.DOWN,
+	Direction.DOWN: Direction.UP,
+}
 enum TextType {
 	NOUN = 0,
 	VERB = 1,
