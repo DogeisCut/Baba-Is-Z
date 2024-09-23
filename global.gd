@@ -140,10 +140,17 @@ func do_movement(action: TurnActions) -> void:
 	for unit in get_units_with_effect("you"):
 		if action != TurnActions.IDLE:
 			unit.move(directions[action][0], directions[action][1], false)
+	apply_movement()
 	for unit in get_units_with_effect("move"):
 		if !unit.move(unit.direction_vectors[unit.dir], unit.dir, false):
 			unit.dir = unit.directions_180[unit.dir]
 			unit.move(unit.direction_vectors[unit.dir], unit.dir, false)
+	apply_movement()
+	for unit in get_units_with_effect("shift"):
+		for unit2 in units_at(unit.pos):
+			if unit2 != unit:
+				unit2.move(unit.direction_vectors[unit.dir], unit.dir, false)
+	apply_movement()
 
 func block(action: TurnActions) -> void:
 	for color in colors.keys():
@@ -211,14 +218,16 @@ func turn(action: TurnActions) -> void:
 	for unit in units:
 		unit.color = Global.get_palette_color(unit.base_color)
 	do_movement(action)
+	parse_text()
+	handle_transforms()
+	block(action)
+
+func apply_movement():
 	for move in movement:
 		var unit: Unit = move[0]
 		var to: Vector3i = move[1]
 		unit.pos = to
 	movement = []
-	parse_text()
-	handle_transforms()
-	block(action)
 
 func flatten_array(arr):
 	var flat = []
@@ -370,6 +379,10 @@ func parse_text() -> void:
 		#for unit in units:
 			#if unit.unit_type == "text":
 				#unit.color = Global.get_palette_color(unit.active_color)
+
+func post_rules():
+	#where all, group, not NOUN, not VERB, and text are handled
+	pass
 
 func cartesian_product(arrays: Array, current_index: int = 0, current_combination: Array = []):
 	if current_index == arrays.size():
