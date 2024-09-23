@@ -1299,7 +1299,7 @@ static var object_list = {
 		"layer": 20,
 		"base_color": Vector2i(0, 1),
 		"active_color": Vector2i(0, 3),
-		"arg_extra": ["right", "up", "left", "down"],
+		"arg_extra": ["right", "up", "left", "down", "forward", "backward"],
 	},
 	"text_back": {
 		"unit_type": "text",

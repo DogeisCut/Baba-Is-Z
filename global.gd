@@ -107,6 +107,30 @@ var infix_conditions: Dictionary = {
 				if unit.unit_name == obj2_name:
 					return true
 		return false,
+	
+	"facing": func(obj1, obj2_name):
+		match obj2_name:
+			"right":
+				return obj1.dir == Unit.Direction.RIGHT
+			"up":
+				return obj1.dir == Unit.Direction.UP
+			"left":
+				return obj1.dir == Unit.Direction.LEFT
+			"down":
+				return obj1.dir == Unit.Direction.DOWN
+			"forward":
+				return obj1.dir == Unit.Direction.FORAWRD
+			"backward":
+				return obj1.dir == Unit.Direction.BACKWARD
+			_:
+				pass
+		return false,
+	
+	"feeling": func(obj1, obj2_name):
+		for unit in get_units_with_effect(obj2_name):
+			if unit == obj1:
+				return true
+		return false,
 }
 
 var prefix_conditions: Dictionary = {
@@ -297,9 +321,9 @@ func parse_text() -> void:
 				var unit = units[0]
 				if not ((unit.unit_name.substr(0,5) == "text_") and (unit.unit_type == "text")):
 					break
-				if last_unit.text_type == Unit.TextType.VERB:
-					if not unit.text_type == Unit.TextType.NOUN:
-						break
+				#if last_unit.text_type == Unit.TextType.VERB:
+					#if not unit.text_type == Unit.TextType.NOUN:
+						#break
 				if last_unit.text_type == Unit.TextType.NOUN:
 					if not (unit.text_type == Unit.TextType.NOT or unit.text_type == Unit.TextType.PREFIX or unit.text_type == Unit.TextType.INFIX or unit.text_type == Unit.TextType.AND):
 						break
@@ -315,6 +339,40 @@ func parse_text() -> void:
 			if len(sentence) >= 3:
 				sentences.append(sentence)
 		
+		# Additional validation:
+		# Sometimes you just gotta check the right way around.
+		var validated_sentences = []
+		for i in len(sentences):
+			var validated_sentence = []
+			var sentence = sentences[i]
+			for j in len(sentence):
+				var word = sentence[j]
+				var last_word = null
+				var next_word = null
+				if j>0:
+					last_word = sentence[j-1]
+				if j<len(sentence)-1:
+					next_word = sentence[j+1]
+				if word[1] == Unit.TextType.INFIX:
+					if last_word == null:
+						continue
+					if not (word[2][0].arg_type.has(next_word[1]) or word[2][0].arg_extra.has(next_word[0])):
+						continue
+				if word[1] == Unit.TextType.PROP:
+					if last_word == null:
+						continue
+					if not (last_word[2][0].arg_type.has(word[1]) or last_word[2][0].arg_extra.has(word[0])):
+						continue
+				if word[1] == Unit.TextType.NOUN:
+					if next_word == null:
+						continue
+					if not (next_word[1] == Unit.TextType.AND or next_word[1] == Unit.TextType.VERB or next_word[1] == Unit.TextType.INFIX):
+						continue
+				validated_sentence.append(word)
+			if len(validated_sentence) >= 3:
+				validated_sentences.append(validated_sentence)
+		sentences = validated_sentences
+			
 		#var unique_sentences = []
 		#var seen_sentence_nodes = []
 		#

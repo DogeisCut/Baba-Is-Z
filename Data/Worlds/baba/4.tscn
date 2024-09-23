@@ -1,0 +1,179 @@
+[gd_scene load_steps=3 format=3 uid="uid://1sqphq84nnqa"]
+
+[ext_resource type="PackedScene" uid="uid://ckij74ymesmcj" path="res://level.tscn" id="1_2njef"]
+[ext_resource type="PackedScene" uid="uid://om1kswasm0yo" path="res://unit.tscn" id="2_cdrhd"]
+
+[node name="Level" instance=ExtResource("1_2njef")]
+object_palette = {
+"baba": {
+"base_color": Vector2i(0, 3),
+"layer": 18,
+"sprite": "baba",
+"tags": ["animal", "common"],
+"text_type": 0,
+"tiling": 2,
+"unit_type": "object"
+},
+"text_baba": {
+"active_color": Vector2i(4, 1),
+"base_color": Vector2i(4, 0),
+"layer": 20,
+"sprite": "text_baba",
+"tags": ["animal", "common"],
+"text_type": 0,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_facing": {
+"active_color": Vector2i(0, 3),
+"arg_extra": ["right", "up", "left", "down"],
+"base_color": Vector2i(0, 1),
+"layer": 20,
+"sprite": "text_facing",
+"tags": ["text_condition"],
+"text_type": 7,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_feeling": {
+"active_color": Vector2i(0, 3),
+"arg_type": [2],
+"base_color": Vector2i(0, 1),
+"layer": 20,
+"sprite": "text_feeling",
+"tags": ["text_condition"],
+"text_type": 7,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_is": {
+"active_color": Vector2i(0, 3),
+"arg_type": [0, 2],
+"base_color": Vector2i(0, 1),
+"layer": 20,
+"sprite": "text_is",
+"tags": ["text_verb", "common"],
+"text_type": 1,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_move": {
+"active_color": Vector2i(5, 3),
+"base_color": Vector2i(5, 1),
+"layer": 20,
+"sprite": "text_move",
+"tags": ["text_quality", "common", "movement"],
+"text_type": 2,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_pet": {
+"active_color": Vector2i(4, 2),
+"base_color": Vector2i(3, 1),
+"layer": 20,
+"sprite": "text_pet",
+"tags": ["text_quality", "decorative"],
+"text_type": 2,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_purple": {
+"active_color": Vector2i(3, 1),
+"base_color": Vector2i(3, 0),
+"layer": 20,
+"sprite": "text_purple",
+"tags": ["text_quality", "decorative", "colour"],
+"text_type": 2,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_up": {
+"active_color": Vector2i(1, 4),
+"base_color": Vector2i(1, 3),
+"layer": 20,
+"sprite": "text_up",
+"tags": ["text_quality", "common", "movement"],
+"text_type": 2,
+"tiling": -1,
+"unit_type": "text"
+},
+"text_you": {
+"active_color": Vector2i(4, 1),
+"base_color": Vector2i(4, 0),
+"layer": 20,
+"sprite": "text_you",
+"tags": ["text_quality", "common", "movement"],
+"text_type": 2,
+"tiling": -1,
+"unit_type": "text"
+}
+}
+
+[node name="Unit12" parent="Units" index="0" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0.5)
+unit_name = "text_baba"
+
+[node name="Unit13" parent="Units" index="1" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, -0.5, 0.5)
+unit_name = "text_is"
+
+[node name="Unit27" parent="Units" index="2" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, -2.5, 2.5)
+unit_name = "text_is"
+
+[node name="Unit14" parent="Units" index="3" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -0.5, 0.5)
+unit_name = "text_you"
+
+[node name="Unit28" parent="Units" index="4" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -2.5, 2.5)
+unit_name = "text_you"
+
+[node name="Unit19" parent="Units" index="5" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 2.5)
+unit_name = "text_baba"
+
+[node name="Unit20" parent="Units" index="6" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, -0.5, 2.5)
+unit_name = "text_is"
+
+[node name="Unit21" parent="Units" index="7" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -0.5, 2.5)
+unit_name = "text_pet"
+
+[node name="Unit22" parent="Units" index="8" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -0.5, 2.5)
+unit_name = "baba"
+dir = 16
+
+[node name="Unit15" parent="Units" index="9" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -1.5, 0.5)
+unit_name = "text_feeling"
+
+[node name="Unit23" parent="Units" index="10" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -1.5, 2.5)
+unit_name = "text_facing"
+
+[node name="Unit24" parent="Units" index="11" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -2.5, 2.5)
+unit_name = "text_up"
+
+[node name="Unit16" parent="Units" index="12" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -2.5, 0.5)
+unit_name = "text_pet"
+
+[node name="Unit17" parent="Units" index="13" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -3.5, 0.5)
+unit_name = "text_is"
+
+[node name="Unit26" parent="Units" index="14" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -3.5, 2.5)
+unit_name = "text_is"
+
+[node name="Unit18" parent="Units" index="15" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -4.5, 0.5)
+unit_name = "text_purple"
+
+[node name="Unit25" parent="Units" index="16" instance=ExtResource("2_cdrhd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -4.5, 2.5)
+unit_name = "text_move"

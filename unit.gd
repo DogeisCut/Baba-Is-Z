@@ -74,9 +74,9 @@ var base_color: Vector2i = Vector2i(0,3)
 var active_color: Vector2i = Vector2i(0,3)
 
 #@export_category("Other")
-var arg_type: Array[TextType] = [TextType.NOUN, TextType.PROP]
-var arg_extra: Array[String] = []
-var custom_objects: Array[String] = []
+var arg_type: Array = [TextType.NOUN]
+var arg_extra: Array = []
+var custom_objects: Array = []
 
 var id := 0
 
@@ -146,19 +146,27 @@ func _process(delta) -> void:
 			%Sprite.texture = load("res://Sprites/error_0_1.png")
 
 func transform_to(pallete_obj_name, instant = false):
+	unit_name = pallete_obj_name
+	if unit_name.substr(0,5) == "text_":
+		read_name = unit_name.substr(5)
+	else:
+		read_name = unit_name
+	
+	if level.object_palette[pallete_obj_name].has("text_type"):
+		text_type = level.object_palette[pallete_obj_name]["text_type"]
+	
+	if level.object_palette[pallete_obj_name].has("unit_type"):
+		unit_type = level.object_palette[pallete_obj_name]["unit_type"]
+	
+	if level.object_palette[pallete_obj_name].has("arg_type"):
+		arg_type = level.object_palette[pallete_obj_name]["arg_type"]
+	
+	if level.object_palette[pallete_obj_name].has("arg_extra"):
+		arg_extra = level.object_palette[pallete_obj_name]["arg_extra"]
+	
+	if level.object_palette[pallete_obj_name].has("custom_objects"):
+		custom_objects = level.object_palette[pallete_obj_name]["custom_objects"]
 	if instant:
-		unit_name = pallete_obj_name
-		if unit_name.substr(0,5) == "text_":
-			read_name = unit_name.substr(5)
-		else:
-			read_name = unit_name
-		
-		if level.object_palette[pallete_obj_name].has("text_type"):
-			text_type = level.object_palette[pallete_obj_name]["text_type"]
-		
-		if level.object_palette[pallete_obj_name].has("unit_type"):
-			unit_type = level.object_palette[pallete_obj_name]["unit_type"]
-		
 		if level.object_palette[pallete_obj_name].has("sprite"):
 			sprite = level.object_palette[pallete_obj_name]["sprite"]
 		
@@ -176,18 +184,6 @@ func transform_to(pallete_obj_name, instant = false):
 		if level.object_palette[pallete_obj_name].has("layer"):
 			layer = level.object_palette[pallete_obj_name]["layer"]
 	else:
-		unit_name = pallete_obj_name
-		if unit_name.substr(0,5) == "text_":
-			read_name = unit_name.substr(5)
-		else:
-			read_name = unit_name
-		
-		if level.object_palette[pallete_obj_name].has("text_type"):
-			text_type = level.object_palette[pallete_obj_name]["text_type"]
-		
-		if level.object_palette[pallete_obj_name].has("unit_type"):
-			unit_type = level.object_palette[pallete_obj_name]["unit_type"]
-		
 		var tween = create_tween()
 		tween.tween_property(self, "scale", Vector3(1, 0.01, 1), 0.15/2.0)
 		tween.tween_callback(
