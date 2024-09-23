@@ -10,6 +10,9 @@ var baserules = [["text", "is", "push"],["level", "is", "stop"],["cursor","is","
 var level: Level
 var camera: Camera3D
 var movement: Array
+var last_turn_action: TurnActions
+
+const UNIT_FILE = preload("res://unit.tscn")
 
 var colors = {
 	"red": Vector2i(2, 2),
@@ -114,12 +117,16 @@ var prefix_conditions: Dictionary = {
 				continue
 			is_lonely = false
 		return is_lonely,
-	"idle": func(obj: Unit): #poopoo
-		return false,
+	"idle": func(obj: Unit):
+		return last_turn_action == TurnActions.IDLE,
 	"often": func(obj: Unit):
 		return randf() <= 3.0 / 4.0,
-	"powered": func(obj: Unit): #poopoo
-		return false,
+	"powered": func(obj: Unit): #should probably do this automatically
+		return !get_units_with_effect("power").is_empty(),
+	"powered2": func(obj: Unit):
+		return !get_units_with_effect("power2").is_empty(),
+	"powered3": func(obj: Unit):
+		return !get_units_with_effect("power3").is_empty(),
 	"seldom": func(obj: Unit):
 		return randf() <= 1.0 / 6.0,
 	"never": func(obj: Unit):
@@ -138,6 +145,31 @@ func block(action: TurnActions) -> void:
 	for color in colors.keys():
 		for unit in get_units_with_effect(color):
 			unit.color = get_palette_color(colors[color])
+	
+	print()
+	var makes = []
+	if feature_index.has("make"):
+		for rule in feature_index["make"]:
+			if level.object_palette.has(rule["rule_dict"][2]) or rule["rule_dict"][2] == "text":
+				for unit in units:
+					if unit.unit_name == rule["rule_dict"][0]:
+						if check_condition(rule, unit):
+							if rule["rule_dict"][2] == "text":
+								makes.append(["text_" + unit.read_name, unit.pos, unit.dir])
+							else:
+								makes.append([rule["rule_dict"][2], unit.pos, unit.dir])
+	for make in makes:
+		make_unit(make[0], make[1], make[2])
+
+func make_unit(what: String, at: Vector3i, dir: Unit.Direction):
+	var units_node = level.get_node("%Units")
+	var made_unit: Unit = UNIT_FILE.instantiate()
+	made_unit.level = level
+	made_unit.pos = at
+	made_unit.dir = dir
+	made_unit.global_position = Vector3(at.x+0.5, -(at.y+0.5), at.z+0.5)
+	made_unit.transform_to(what, true)
+	units_node.add_child(made_unit)
 
 func _process(_delta) -> void:
 	if not Engine.is_editor_hint():
@@ -171,6 +203,7 @@ func _process(_delta) -> void:
 				turn(action)
 
 func turn(action: TurnActions) -> void:
+	last_turn_action = action
 	for unit in units:
 		unit.color = Global.get_palette_color(unit.base_color)
 	do_movement(action)
@@ -235,6 +268,9 @@ func parse_text() -> void:
 				if last_unit.text_type == Unit.TextType.PROP:
 					if not unit.text_type == Unit.TextType.AND:
 						break
+				if last_unit.text_type == Unit.TextType.NOUN:
+					if not unit.text_type == Unit.TextType.AND:
+						break
 				sentence.push_back([unit.read_name, unit.text_type, [unit], 1])
 				last_unit = unit
 			sentence.reverse()
@@ -278,7 +314,7 @@ func parse_text() -> void:
 				#seen_sentence_nodes.append(sentence_nodes_set)
 		#sentences = unique_sentences
 		
-		print(sentences)
+		#print(sentences)
 		
 		# This block assumes the sentences provided to it are valid, contain only ands in conditions, and there are only 1 nots or none
 		for i in len(sentences):

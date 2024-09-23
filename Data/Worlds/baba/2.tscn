@@ -35,6 +35,16 @@ object_palette = {
 "tiling": -1,
 "unit_type": "text"
 },
+"text_idle": {
+"active_color": Vector2i(2, 3),
+"base_color": Vector2i(2, 2),
+"layer": 20,
+"sprite": "text_idle",
+"tags": ["text_condition", "text_prefix"],
+"text_type": 3,
+"tiling": -1,
+"unit_type": "text"
+},
 "text_is": {
 "active_color": Vector2i(0, 3),
 "arg_type": [0, 2],
@@ -145,45 +155,49 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -4.5, 4.5)
 unit_name = "text_win"
 
 [node name="Unit15" parent="Units" index="9" instance=ExtResource("2_gfhed")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -0.5, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -1.5, 0.5)
 unit_name = "text_jiji"
 
-[node name="Unit16" parent="Units" index="10" instance=ExtResource("2_gfhed")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -1.5, 0.5)
+[node name="Unit21" parent="Units" index="10" instance=ExtResource("2_gfhed")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -0.5, 0.5)
+unit_name = "text_idle"
+
+[node name="Unit16" parent="Units" index="11" instance=ExtResource("2_gfhed")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -2.5, 0.5)
 unit_name = "text_is"
 
-[node name="Unit17" parent="Units" index="11" instance=ExtResource("2_gfhed")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -2.5, 0.5)
+[node name="Unit17" parent="Units" index="12" instance=ExtResource("2_gfhed")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -3.5, 0.5)
 unit_name = "text_purple"
 
-[node name="Unit3" parent="Units" index="12" instance=ExtResource("2_gfhed")]
+[node name="Unit3" parent="Units" index="13" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -0.5, 4.5)
 unit_name = "text_you"
 
-[node name="Unit4" parent="Units" index="13" instance=ExtResource("2_gfhed")]
+[node name="Unit4" parent="Units" index="14" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -2.5, 2.5)
 unit_name = "baba"
 
-[node name="Unit9" parent="Units" index="14" instance=ExtResource("2_gfhed")]
+[node name="Unit9" parent="Units" index="15" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -2.5, 2.5)
 unit_name = "baba"
 
-[node name="Unit10" parent="Units" index="15" instance=ExtResource("2_gfhed")]
+[node name="Unit10" parent="Units" index="16" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -2.5, 3.5)
 unit_name = "baba"
 
-[node name="Unit11" parent="Units" index="16" instance=ExtResource("2_gfhed")]
+[node name="Unit11" parent="Units" index="17" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -1.5, 2.5)
 unit_name = "jiji"
 
-[node name="Unit12" parent="Units" index="17" instance=ExtResource("2_gfhed")]
+[node name="Unit12" parent="Units" index="18" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -3.5, 2.5)
 unit_name = "jiji"
 
-[node name="Unit13" parent="Units" index="18" instance=ExtResource("2_gfhed")]
+[node name="Unit13" parent="Units" index="19" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -3.5, 1.5)
 unit_name = "jiji"
 
-[node name="Unit14" parent="Units" index="19" instance=ExtResource("2_gfhed")]
+[node name="Unit14" parent="Units" index="20" instance=ExtResource("2_gfhed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -4.5, 1.5)
 unit_name = "jiji"
