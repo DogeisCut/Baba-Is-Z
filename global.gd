@@ -363,6 +363,9 @@ func parse_text() -> void:
 				for rule_units in rule["rule_units"]:
 					for unit in rule_units:
 						unit.color = Global.get_palette_color(unit.active_color)
+		#for unit in units:
+			#if unit.unit_type == "text":
+				#unit.color = Global.get_palette_color(unit.active_color)
 
 func cartesian_product(arrays: Array, current_index: int = 0, current_combination: Array = []):
 	if current_index == arrays.size():
