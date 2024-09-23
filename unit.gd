@@ -152,6 +152,7 @@ func transform_to(pallete_obj_name, instant = false):
 		if level.object_palette[pallete_obj_name].has("base_color"):
 			color = Global.get_palette_color(level.object_palette[pallete_obj_name]["base_color"])
 			base_color = level.object_palette[pallete_obj_name]["base_color"]
+			%Sprite.modulate = color
 		
 		if level.object_palette[pallete_obj_name].has("active_color"):
 			active_color = level.object_palette[pallete_obj_name]["active_color"]
@@ -184,6 +185,7 @@ func transform_to(pallete_obj_name, instant = false):
 				if level.object_palette[pallete_obj_name].has("base_color"):
 					color = Global.get_palette_color(level.object_palette[pallete_obj_name]["base_color"])
 					base_color = level.object_palette[pallete_obj_name]["base_color"]
+					%Sprite.modulate = color
 				
 				if level.object_palette[pallete_obj_name].has("active_color"):
 					active_color = level.object_palette[pallete_obj_name]["active_color"]
