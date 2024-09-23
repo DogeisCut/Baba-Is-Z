@@ -157,7 +157,6 @@ func block(action: TurnActions) -> void:
 		for unit in get_units_with_effect(color):
 			unit.color = get_palette_color(colors[color])
 	
-	print()
 	var makes = []
 	if feature_index.has("make"):
 		for rule in feature_index["make"]:
